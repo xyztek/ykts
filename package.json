@@ -25,5 +25,8 @@
     "Smart",
     "Contract",
     "Solidity"
-  ]
+  ],
+  "devDependencies": {
+    "dotenv": "^8.2.0"
+  }
 }

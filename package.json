@@ -31,5 +31,8 @@
     "@truffle/hdwallet-provider": "^1.0.35",
     "dotenv": "^8.2.0",
     "lite-server": "^2.5.4"
+  },
+  "dependencies": {
+    "openzeppelin-solidity": "^3.0.2"
   }
 }

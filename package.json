@@ -27,6 +27,7 @@
     "Solidity"
   ],
   "devDependencies": {
+    "@truffle/hdwallet-provider": "^1.0.35",
     "dotenv": "^8.2.0"
   }
 }

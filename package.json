@@ -1,0 +1,29 @@
+{
+  "name": "ykts",
+  "version": "1.0.0",
+  "description": "Yukumlu Takip Sistemi",
+  "main": "truffle-config.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kozyilmaz/ykts.git"
+  },
+  "author": "Kazım Rıfat Özyılmaz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kozyilmaz/ykts/issues"
+  },
+  "homepage": "https://github.com/kozyilmaz/ykts#readme",
+  "keywords": [
+    "Ethereum",
+    "DApp",
+    "Smart",
+    "Contract",
+    "Solidity"
+  ]
+}

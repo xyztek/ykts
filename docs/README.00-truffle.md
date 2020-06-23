@@ -50,7 +50,7 @@ $ git push
 $ npm install dotenv --save-dev
 
 # install hd wallet provider for development
-$ npm install truffle-hdwallet-provider --save-dev
+$ npm install @truffle/hdwallet-provider --save-dev
 
 # install lite-server for DApp development
 $ npm install lite-server --save-dev

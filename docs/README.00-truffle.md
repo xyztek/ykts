@@ -15,9 +15,8 @@ $ sudo npm install -g express
 $ sudo npm install -g browserify
 $ sudo ln -sf /usr/bin/truffle /usr/local/bin/truffle
 
-# correct permissions
-$ sudo chown -R $USER:$USER ~/.config/truffle
-
+# fix permissions
+$ sudo chown -R $USER:$(id -gn $USER) ~/.config
 ```
 
 ### Dependencies on macOS
@@ -30,8 +29,8 @@ $ sudo npm install -g --unsafe-perm=true --allow-root ganache-cli
 $ sudo npm install -g express
 $ sudo npm install -g browserify
 
-# correct permissions
-$ sudo chown -R $USER:staff ~/.config/truffle
+# fix permissions
+$ sudo chown -R $USER:$(id -gn $USER) ~/.config
 ```
 
 ### Setting up a Truffle smart contract project

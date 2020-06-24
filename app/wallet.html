@@ -9,19 +9,12 @@
   <h1>Ethereum Wallet Tests</h1>
   <p>
     <span style="color:red;font-weight:bold" id="providernote"></span>
-    <br />
-    Using the sample ERC20 token contract (NoNameToken) at 
-    <a href="#" id="etherscanurl" target="_blank">
-      <span style="font-weight:bold" id="contractaddress"></span>
-    </a> 
-    deployed on Rinkeby network
   </p>
 
-  <h2>Check default Ethereum account ETH and NoNameToken balance via Metamask</h2>
+  <h2>Check default Ethereum account ETH balance via Metamask</h2>
   <p>Your default Ethereum address balance is:
-    <div><span style="color:blue;font-weight:bold" id="defaultaddress"></span></div>
-    <div><span style="color:blue;font-weight:bold" id="etherbalanceauto"></span></div>
-    <div><span style="color:blue;font-weight:bold" id="tokenbalanceauto"></span></div>
+    <div>Address: <span style="color:blue;font-weight:bold" id="defaultaddress"></span></div>
+    <div>Balance:<span style="color:blue;font-weight:bold" id="etherbalanceauto"></span></div>
   </p>
 
   <h2>Send ETH to address from your default Ethereum account via Metamask</h2>
@@ -32,37 +25,6 @@
   <button id="send" onclick="App.sendEther()">Send ETH to address</button>
   <p>
     <div><span style="color:blue;font-weight:bold" id="sendethstatus"></span></div>
-  </p>
-
-  <h2>Send custom ERC20 token to any address from your default Ethereum account via Metamask</h2>
-  <input type="text" size="50" id="erc20address" placeholder="enter ERC20 contract address (0x...)" />
-  <br />
-  <input type="text" size="50" id="tokenamount" placeholder="enter ERC20 token amount, e.g. 0.03"></input>
-  <br />
-  <input type="text" size="50" id="totokenaddress" placeholder="enter address to send (0x...)" />
-  <br />
-  <button id="send" onclick="App.sendToken()">Send ERC20 token to address</button>
-  <p>
-    <div><span style="color:blue;font-weight:bold" id="sendtokenstatus"></span></div>
-  </p>
-
-  <h2>Check ETH and NoNameToken balance of an Ethereum address</h2>
-  <input type="text" size="50" id="address" placeholder="enter your Ethereum address (0x...)" />
-  <br />
-  <button type="button" onClick="App.getTotalBalance();">Get Balance</button>
-  <p>
-    <div><span style="color:blue;font-weight:bold" id="etherbalancemanual"></span></div>
-    <div><span style="color:blue;font-weight:bold" id="tokenbalancemanual"></span></div>
-  </p>
-
-  <h2>Check custom token balance of an Ethereum address</h2>
-  <input type="text" size="50" id="tokenaddress" placeholder="enter ERC20 contract address (0x...)" />
-  <br />
-  <input type="text" size="50" id="ethaddress" placeholder="enter your Ethereum address (0x...)" />
-  <br />
-  <button type="button" onClick="App.getCustomTokenBalance();">Get Custom Token Balance</button>
-  <p>
-    <div><span style="color:blue;font-weight:bold" id="customtokenbalance"></span></div>
   </p>
 
 </body>

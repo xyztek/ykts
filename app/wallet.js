@@ -11,7 +11,14 @@ window.App = {
     if (provider === null) {
 			alert("Couldn't get any Web3 providers, probably Metamask/Mist/Infura is not present!");
 			return;
-		}
+    }
+    // check Metamask availability and report
+    if (web3.currentProvider.isMetaMask) {
+      document.getElementById("providernote").innerHTML = "Metamask is available, please set network to Rinkeby!"
+    } else {
+      document.getElementById("providernote").innerHTML = "Metamask is NOT available, please use a local node or set 'infuraAPIKey' and connect to Rinkeby network! Some functionality will not work without Metamask";
+    }
+
     const network = await getNetworkName();
     if (network === null) {
 			alert("Couldn't get any the Ethereum network, probably Metamask/Mist/Infura is not present!");
@@ -23,13 +30,6 @@ window.App = {
 			return;
 		}
     
-    // check Metamask availability
-    if (web3.currentProvider.isMetaMask) {
-      document.getElementById("providernote").innerHTML = "Metamask is available, please set network to Rinkeby!"
-    } else {
-      document.getElementById("providernote").innerHTML = "Metamask is NOT available, please use a local node or set 'infuraAPIKey' and connect to Rinkeby network! Some functionality will not work without Metamask";
-    }
-
     // store default account for later use
     account = accounts[0];
     console.log("default account is:" + account);

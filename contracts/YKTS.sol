@@ -2,8 +2,8 @@
 
 pragma solidity ^0.6.0;
 
-import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
-import "openzeppelin-solidity/contracts/access/AccessControl.sol";
+import "../node_modules/openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
+import "../node_modules/openzeppelin-solidity/contracts/access/AccessControl.sol";
 
 /**
  * @title YKTS
@@ -80,6 +80,11 @@ contract YKTS is AccessControl {
     /// @dev Remove an account from the notary role. Restricted to admins.
     function removeNotary(address account) public virtual onlyAdmin {
         revokeRole(NOTARY_ROLE, account);
+    }
+
+
+    function ethSignedHash(bytes32 messageHash) public pure returns(bytes32) {
+        return messageHash.toEthSignedMessageHash();
     }
 
 

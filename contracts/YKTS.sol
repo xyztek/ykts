@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.6.0;
-import "@openzeppelin/contracts/access/AccessControl.sol";
+import "openzeppelin-solidity/contracts/access/AccessControl.sol";
 
 /**
  * @title YKTSContract

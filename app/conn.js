@@ -1,4 +1,4 @@
-import { createWeb3Provider, getNetworkName, getProviderName } from './common.js';
+import { xyz_create_web3_provider, xyz_get_network_name, xyz_get_provider_name } from './common.js';
 
 // application
 window.App = {
@@ -6,12 +6,12 @@ window.App = {
 		var self = this;
 
 		// fill provider and network details
-		const provider = await getProviderName();
+		const provider = await xyz_get_provider_name();
 		if (provider === null) {
 			alert("Couldn't get any Web3 providers, probably Metamask/Mist is not present!");
 			return;
 		}
-		const network = await getNetworkName();
+		const network = await xyz_get_network_name();
 		if (network === null) {
 			alert("Couldn't get any the Ethereum network, probably Metamask/Mist is not present!");
 			return;
@@ -25,6 +25,6 @@ window.App = {
 
 // hooking up web3 provider
 window.addEventListener('load', async () => {
-	createWeb3Provider();
+	xyz_create_web3_provider();
 	App.start();
 });

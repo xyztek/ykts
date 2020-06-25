@@ -23,6 +23,8 @@
 //
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
+require('dotenv').config();
+const HDWalletProvider = require("@truffle/hdwallet-provider");
 
 module.exports = {
   /**
@@ -75,6 +77,28 @@ module.exports = {
       // network_id: 2111,   // This network is yours, in the cloud.
       // production: true    // Treats this network as if it was a public net. (default: false)
     // }
+
+    localhost: {
+      host: 'localhost',
+      port: 8545,
+      network_id: '*'
+    },
+    mainnet: {
+      provider: () => new HDWalletProvider(process.env.MNEMONIC, "https://mainnet.infura.io/v3/" + process.env.INFURA_PROJECT_ID),
+      network_id: 1,
+      gas: 4500000,
+      gasPrice: 10000000000,
+    },
+    ropsten: {
+      provider: () => new HDWalletProvider(process.env.MNEMONIC, "https://ropsten.infura.io/v3/" + process.env.INFURA_PROJECT_ID),
+      network_id: 3,
+      gas: 4500000
+    },
+    rinkeby: {
+      provider: () => new HDWalletProvider(process.env.MNEMONIC, "https://rinkeby.infura.io/v3/" + process.env.INFURA_PROJECT_ID),
+      network_id: 4,
+      gas: 6500000
+    }
   },
 
   // Set default mocha options here, use special reporters etc.

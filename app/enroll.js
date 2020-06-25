@@ -1,4 +1,4 @@
-import { createWeb3Provider, getEtherBalance, getDefaultAccount, getAccounts, getNetworkName, getProviderName } from './common.js';
+import { createWeb3Provider, getEtherBalance, getAccountByIndex, getNetworkName, getProviderName } from './common.js';
 
 // default account
 var account;
@@ -26,7 +26,7 @@ window.App = {
 			return;
 		}
 		// get default account
-		account = await getDefaultAccount();
+		account = await getAccountByIndex(0);
 		if (account === null) {
 			alert("Couldn't get the default Ethereum accounts, probably Metamask/Mist/Infura is not present!");
 			return;

@@ -1,7 +1,7 @@
 
 let infuraProjectId = "17816af5e26d434aa2f6d52915764ed7";
 
-export async function getDefaultAccount() {
+export async function getAccountByIndex(index) {
 	var account;
 	var accounts;
 	try {
@@ -14,7 +14,7 @@ export async function getDefaultAccount() {
 		return null;
 	}
 	// get default account
-	account = accounts[0];
+	account = accounts[index];
 	if (web3.utils.isAddress(account) != true) {
 		return null;
 	}

@@ -6,11 +6,11 @@ import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 import "openzeppelin-solidity/contracts/access/AccessControl.sol";
 
 /**
- * @title YKTSContract
+ * @title YKTS
  * @author Kazım Rıfat Özyılmaz
  * @notice Implements YKTS with access control
  */
-contract YKTSContract is AccessControl {
+contract YKTS is AccessControl {
 
     using ECDSA for bytes32;
 

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.6.0;
+
+import "openzeppelin-solidity/contracts/cryptography/ECDSA.sol";
 import "openzeppelin-solidity/contracts/access/AccessControl.sol";
 
 /**
@@ -9,6 +11,9 @@ import "openzeppelin-solidity/contracts/access/AccessControl.sol";
  * @notice Implements YKTS with access control
  */
 contract YKTSContract is AccessControl {
+
+    using ECDSA for bytes32;
+
     bytes32 public constant NOTARY_ROLE = keccak256("NOTARY_ROLE");
     bytes32 public constant ENTITY_ROLE = keccak256("ENTITY_ROLE");
     bytes32 public constant BROKER_ROLE = keccak256("BROKER_ROLE");

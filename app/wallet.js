@@ -1,4 +1,4 @@
-import { createWeb3Provider, getEtherBalance, getAccountByIndex, getNetworkName, getProviderName } from './common.js';
+import { xyz_create_web3_provider, xyz_get_balance, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
 
 // default account
 var account;
@@ -8,7 +8,7 @@ window.App = {
 		var self = this;
 
 		// get provider name
-		const provider = await getProviderName();
+		const provider = await xyz_get_provider_name();
 		if (provider === null) {
 				alert("Couldn't get any Web3 providers, probably Metamask/Mist/Infura is not present!");
 				return;
@@ -20,13 +20,13 @@ window.App = {
 			document.getElementById("providernote").innerHTML = "Metamask is NOT available, please use a local node or set 'infuraAPIKey' and connect to Rinkeby network! Some functionality will not work without Metamask";
 		}
 		// get network name
-		const network = await getNetworkName();
+		const network = await xyz_get_network_name();
 		if (network === null) {
 			alert("Couldn't get any the Ethereum network, probably Metamask/Mist/Infura is not present!");
 			return;
 		}
 		// get default account
-		account = await getAccountByIndex(0);
+		account = await xyz_get_account_by_index(0);
 		if (account === null) {
 			alert("Couldn't get the default Ethereum accounts, probably Metamask/Mist/Infura is not present!");
 			return;
@@ -34,7 +34,7 @@ window.App = {
 		document.getElementById("defaultaddress").innerHTML = account;
 
 		// get balance
-		const balance = await getEtherBalance(account);
+		const balance = await xyz_get_balance(account);
 		if (balance === null) {
 			document.getElementById("etherbalanceauto").innerHTML = "invalid";
 		} else {
@@ -78,6 +78,6 @@ window.App = {
 
 // hooking up web3 provider
 window.addEventListener('load', async () => {
-  createWeb3Provider();
+	xyz_create_web3_provider();
 	App.start();
 });

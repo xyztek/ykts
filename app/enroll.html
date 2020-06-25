@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ethereum Wallet Tests</title>
+  <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+  <script src="./wallet.js" type="module"></script>
+</head>
+<body>
+  <h1>Ethereum Wallet Tests</h1>
+  <p>
+    <span style="color:red;font-weight:bold" id="providernote"></span>
+  </p>
+
+  <h2>Check default Ethereum account ETH balance via Metamask</h2>
+  <p>Your default Ethereum address balance is:
+    <div>Address: <span style="color:blue;font-weight:bold" id="defaultaddress"></span></div>
+    <div>Balance:<span style="color:blue;font-weight:bold" id="etherbalanceauto"></span></div>
+  </p>
+
+  <h2>Send ETH to address from your default Ethereum account via Metamask</h2>
+  <input type="text" size="50" id="ethamount" placeholder="enter ETH amount to send, e.g. 0.03"></input>
+  <br />
+  <input type="text" size="50" id="toaddress" placeholder="enter address to send (0x...)" />
+  <br />
+  <button id="send" onclick="App.sendEther()">Send ETH to address</button>
+  <p>
+    <div><span style="color:blue;font-weight:bold" id="sendethstatus"></span></div>
+  </p>
+
+</body>
+</html>

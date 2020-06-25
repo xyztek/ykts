@@ -11,6 +11,7 @@ $ sudo apt-get install -y nodejs
 # install required tools
 $ sudo npm install -g --unsafe-perm=true --allow-root truffle
 $ sudo npm install -g --unsafe-perm=true --allow-root ganache-cli
+$ sudo npm install -g solc
 $ sudo npm install -g express
 $ sudo npm install -g browserify
 $ sudo ln -sf /usr/bin/truffle /usr/local/bin/truffle
@@ -26,6 +27,7 @@ Install `npm` and `node` using the `node-$VERSION.pkg` macOS installer found [he
 # install required tools
 $ sudo npm install -g --unsafe-perm=true --allow-root truffle
 $ sudo npm install -g --unsafe-perm=true --allow-root ganache-cli
+$ sudo npm install -g solc
 $ sudo npm install -g express
 $ sudo npm install -g browserify
 

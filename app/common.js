@@ -1,25 +1,53 @@
 
 let infuraProjectId = "17816af5e26d434aa2f6d52915764ed7";
 
-export async function getAccounts() {
+export async function getDefaultAccount() {
+	var account;
+	var accounts;
 	try {
-		const accounts = await web3.eth.getAccounts();
-		if (accounts.length == 0) {
-			return null;
-		}
-		console.log("Ethereum Accounts", accounts);
-		return accounts;
-	} catch (error) {
+		accounts = await web3.eth.getAccounts();
+	} catch (e) {
+		console.log(e.message);
 		return null;
 	}
+	if (accounts.length == 0) {
+		return null;
+	}
+	// get default account
+	account = accounts[0];
+	if (web3.utils.isAddress(account) != true) {
+		return null;
+	}
+	console.log("Ethereum Default Account", account);
+	return account;
+}
+
+export async function getAccounts() {
+	var accounts;
+	try {
+		accounts = await web3.eth.getAccounts();
+	} catch (e) {
+		console.log(e.message);
+		return null;
+	}
+	if (accounts.length == 0) {
+		return null;
+	}
+	console.log("Ethereum Accounts", accounts);
+	return accounts;
 }
 
 export async function getEtherBalance(walletAddress) {
 	try {
+		if (web3.utils.isAddress(walletAddress) != true) {
+			console.log("invalid Ethereum address");
+			return null;
+		}
 		const balance = await web3.eth.getBalance(walletAddress);
 		console.log("Ethereum Balance", balance);
 		return balance;
-	} catch (error) {
+	} catch (e) {
+		console.log(e.message);
 		return null;
 	}
 }
@@ -29,7 +57,8 @@ export async function getNetworkName() {
 		const network = await web3.eth.net.getNetworkType();
 		console.log("Ethereum Network", network);
 		return network;
-	} catch (error) {
+	} catch (e) {
+		console.log(e.message);
 		return null;
 	}
 }
@@ -64,8 +93,9 @@ export async function createWeb3Provider() {
 			// Request account access if needed
 			await ethereum.enable();
 			// Acccounts now exposed
-		} catch (error) {
+		} catch (e) {
 			// User denied account access...
+			console.log(e.message);
 		}
 	}
 	// Legacy dapp browsers...

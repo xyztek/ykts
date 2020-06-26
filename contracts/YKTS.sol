@@ -83,15 +83,24 @@ contract YKTS is AccessControl {
     }
 
 
-    /// @dev Recover address of the signer
+    /// @dev Return `true` if the signature of the hash belongs to the specified owner.
+    function isSigner(address owner, bytes32 hash, bytes memory signature) public pure returns(bool) {
+        // Convert message hash to eth_sign() compatible format
+        bytes32 messageHash = hash.toEthSignedMessageHash();
+        // Verify that the message's signer is the owner
+        address signer = messageHash.recover(signature);
+        if (signer != owner) {
+            return false;
+        }
+        return true;
+    }
+    /// @dev Convert the hash value of a document/message (may be checksum or sha3()) to eth_sign() compatible format
+    function hashToSign(bytes32 hash) public pure returns(bytes32) {
+        return hash.toEthSignedMessageHash();
+    }
+    /// @dev To be removed - testing purposes
     function recover(bytes32 hash, bytes memory signature) public pure returns(address) {
         return hash.recover(signature);
     }
-    /// @dev Convert message hash to eth_sign() compatible format
-    function ethSignedHash(bytes32 messageHash) public pure returns(bytes32) {
-        return messageHash.toEthSignedMessageHash();
-    }
-
-
 
 }

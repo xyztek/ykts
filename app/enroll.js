@@ -52,9 +52,47 @@ window.App = {
 		console.log("YKTS Contract ABI", contract_abi);
 
 		//const contract = new web3.eth.Contract(contractJSON.abi, deployedAddress);
+		try {
+			//const contract = await web3.eth.contract(contract_abi).at(contract_address);
+		} catch (e) {
+			console.log(e.message);
+		}
+		
+		const contract = new web3.eth.Contract(contract_abi, contract_address);
+		console.log("contract: ", contract);
+
+		const msg = "OpenZeppelin";
+		const msgHash = web3.utils.sha3(msg);
+		console.log("msgHash: ", msgHash);
+
+
+		const ethHash = await contract.methods.hashToSign(msgHash).call();
+		console.log("ethHash: ", ethHash);
+
+	
+		var address = await xyz_get_account_by_index(0);
+		var signature = await web3.eth.sign(ethHash, address);    // sign the mesage hash
+		signature = signature.substr(0, 130) + (signature.substr(130) == "00" ? "1b" : "1c"); // v: 0,1 => 27,28
+		var recovered = await contract.methods.isSigner(address, msgHash, signature).call(); // recover from the ethHash
+		
+		console.log("msgHash: ", msgHash);
+		console.log("ethHash: ", ethHash);
+		console.log("signature: ", signature);
+		console.log("recovered: ", recovered);
+		
+		//assert.strictEqual(recovered, signer, "The recovered signature does not match the signer.");
+
 	},
 
+	sendEther: async () => {
+		var self = this;
+		
+		console.log("Button pressed");
+		
+	}
+
 };
+
 
 // hooking up web3 provider
 window.addEventListener('load', async () => {

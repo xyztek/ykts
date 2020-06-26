@@ -83,6 +83,11 @@ contract YKTS is AccessControl {
     }
 
 
+    /// @dev Recover address of the signer
+    function recover(bytes32 hash, bytes memory signature) public pure returns(address) {
+        return hash.recover(signature);
+    }
+    /// @dev Convert message hash to eth_sign() compatible format
     function ethSignedHash(bytes32 messageHash) public pure returns(bytes32) {
         return messageHash.toEthSignedMessageHash();
     }

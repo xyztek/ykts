@@ -1,4 +1,4 @@
-import { xyz_get_contract, xyz_create_web3_provider, xyz_get_balance, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
+import { xyz_get_contract, xyz_ykts_is_signer, xyz_ykts_sign, xyz_create_web3_provider, xyz_get_balance, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
 
 // default account
 var account;
@@ -45,42 +45,26 @@ window.App = {
 		}
 
 		var contractvars = await xyz_get_contract("YKTS.json");
-		contract_address = contractvars[0];
-		contract_abi = contractvars[1];
+		const contract_address = contractvars[0];
+		const contract_abi = contractvars[1];
 
 		console.log("YKTS Contract Address", contract_address);
 		console.log("YKTS Contract ABI", contract_abi);
 
-		//const contract = new web3.eth.Contract(contractJSON.abi, deployedAddress);
-		try {
-			//const contract = await web3.eth.contract(contract_abi).at(contract_address);
-		} catch (e) {
-			console.log(e.message);
-		}
-		
 		const contract = new web3.eth.Contract(contract_abi, contract_address);
 		console.log("contract: ", contract);
 
+		// message
 		const msg = "OpenZeppelin";
-		const msgHash = web3.utils.sha3(msg);
-		console.log("msgHash: ", msgHash);
+		const msg_hash = web3.utils.sha3(msg);
 
+		// sign
+		const address = await xyz_get_account_by_index(0);
+		const signature = await xyz_ykts_sign(msg_hash, address);
 
-		const ethHash = await contract.methods.hashToSign(msgHash).call();
-		console.log("ethHash: ", ethHash);
-
-	
-		var address = await xyz_get_account_by_index(0);
-		var signature = await web3.eth.sign(ethHash, address);    // sign the mesage hash
-		signature = signature.substr(0, 130) + (signature.substr(130) == "00" ? "1b" : "1c"); // v: 0,1 => 27,28
-		var recovered = await contract.methods.isSigner(address, msgHash, signature).call(); // recover from the ethHash
-		
-		console.log("msgHash: ", msgHash);
-		console.log("ethHash: ", ethHash);
-		console.log("signature: ", signature);
-		console.log("recovered: ", recovered);
-		
-		//assert.strictEqual(recovered, signer, "The recovered signature does not match the signer.");
+		// verify
+		const ret = await xyz_ykts_is_signer(address, msg_hash, signature);
+		console.log("ret: ", ret);
 
 	},
 

@@ -26,6 +26,32 @@ export async function xyz_get_contract(contract_name) {
 	return [contract_address, contract_abi];
 }
 
+export async function xyz_ykts_sign(msg_hash, address) {
+
+	var contractvars = await xyz_get_contract("YKTS.json");
+	const contract_address = contractvars[0];
+	const contract_abi = contractvars[1];
+	const contract = new web3.eth.Contract(contract_abi, contract_address);
+
+	// format message hash for eth_sign compatability (recover() needs this)
+	const eth_hash = await contract.methods.hashToSign(msg_hash).call();
+	// sign formatted hash
+	var signature = await web3.eth.sign(eth_hash, address);
+	// fix ECDSA params
+	signature = signature.substr(0, 130) + (signature.substr(130) == "00" ? "1b" : "1c"); // v: 0,1 => 27,28
+	return signature;
+}
+
+export async function xyz_ykts_is_signer(owner, hash, signature) {
+	var contractvars = await xyz_get_contract("YKTS.json");
+	const contract_address = contractvars[0];
+	const contract_abi = contractvars[1];
+	const contract = new web3.eth.Contract(contract_abi, contract_address);
+	
+	const result = await contract.methods.isSigner(owner, hash, signature).call();
+	return result;
+}
+
 export async function xyz_get_account_by_index(index) {
 	var account;
 	var accounts;

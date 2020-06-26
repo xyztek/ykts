@@ -88,6 +88,17 @@ export async function xyz_get_network_name() {
 	}
 }
 
+export async function xyz_get_network_id() {
+	try {
+		const id = await web3.eth.net.getId()
+		console.log("Ethereum Network Id", id);
+		return id;
+	} catch (e) {
+		console.log(e.message);
+		return null;
+	}
+}
+
 // copied from https://ethereum.stackexchange.com/questions/24266/elegant-way-to-detect-current-provider-int-web3-js
 export async function xyz_get_provider_name() {
 	if (window.web3.currentProvider.isMetaMask)

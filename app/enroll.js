@@ -1,10 +1,7 @@
-import { xyz_get_contract, xyz_ykts_is_signer, xyz_ykts_sign, xyz_create_web3_provider, xyz_get_balance, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
+import { xyz_get_contract, xyz_ykts_recover, xyz_ykts_is_signer, xyz_ykts_sign, xyz_create_web3_provider, xyz_get_balance, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
 
 // default account
 var account;
-// smart contract
-var contract_abi;
-var contract_address;
 
 window.App = {
 	start: async () => {
@@ -43,38 +40,106 @@ window.App = {
 		} else {
 			document.getElementById("etherbalanceauto").innerHTML = web3.utils.fromWei(balance, 'ether');
 		}
-
-		var contractvars = await xyz_get_contract("YKTS.json");
-		const contract_address = contractvars[0];
-		const contract_abi = contractvars[1];
-
-		console.log("YKTS Contract Address", contract_address);
-		console.log("YKTS Contract ABI", contract_abi);
-
-		const contract = new web3.eth.Contract(contract_abi, contract_address);
-		console.log("contract: ", contract);
-
-		// message
-		const msg = "OpenZeppelin";
-		const msg_hash = web3.utils.sha3(msg);
-
-		// sign
-		const address = await xyz_get_account_by_index(0);
-		const signature = await xyz_ykts_sign(msg_hash, address);
-
-		// verify
-		const ret = await xyz_ykts_is_signer(address, msg_hash, signature);
-		console.log("ret: ", ret);
-
 	},
 
-	sendEther: async () => {
+	message_test: async () => {
 		var self = this;
-		
-		console.log("Button pressed");
-		
-	}
+		document.getElementById("sanityresult").innerHTML = "processing";
+		const sanitymessage = document.getElementById('sanitymessage')
+		if (!sanitymessage) {
+			document.getElementById("sanityresult").innerHTML = "false";
+			alert("Empty message!");
+			return;
+		}
+		const message = sanitymessage.value;
+		console.log("Test Message:", message);
+		// calculate hash of message
+		const hash = web3.utils.sha3(message);
+		console.log("Test Hash:", hash);
+		// sign
+		const address = await xyz_get_account_by_index(0);
+		const signature = await xyz_ykts_sign(hash, address);
+		console.log("Test Signature: ", signature);
+		// verify
+		const ret = await xyz_ykts_is_signer(address, hash, signature);
+		console.log("Test Return: ", ret);
+		// recover
+		const recover = await xyz_ykts_recover(hash, signature);
+		console.log("Test Recover: ", recover);
+		// update status
+		document.getElementById("sanityresult").innerHTML = ret;
+	},
 
+	message_sign: async () => {
+		var self = this;
+		document.getElementById("yktsmessagehash").innerHTML = 0;
+		document.getElementById("yktsmessagesignature").innerHTML = 0;
+		document.getElementById("yktssigner").innerHTML = 0;
+
+		const yktsmessage = document.getElementById('yktsmessagetosign')
+		if (!yktsmessage) {
+			alert("Empty message!");
+			return;
+		}
+		const message = yktsmessage.value;
+		console.log("Sign Message:", message);
+		// calculate hash of message
+		const hash = web3.utils.sha3(message);
+		console.log("Sign Hash:", hash);
+
+		// sign hash of message with default account
+		const address = await xyz_get_account_by_index(0);
+		const signature = await xyz_ykts_sign(hash, address);
+		console.log("Sig Signature: ", signature);
+
+		// recover signer address
+		const recover = await xyz_ykts_recover(hash, signature);
+		console.log("Sign Recover: ", recover);
+
+		document.getElementById("yktsmessagehash").innerHTML = hash;
+		document.getElementById("yktsmessagesignature").innerHTML = signature;
+		document.getElementById("yktssigner").innerHTML = address;
+	},
+
+	message_verify: async () => {
+		var self = this;
+		document.getElementById("yktsverifyresult").innerHTML = "processing";
+
+		const yktsmessagetoverify = document.getElementById('yktsmessagetoverify');
+		if (!yktsmessagetoverify) {
+			document.getElementById("yktsverifyresult").innerHTML = "false";
+			alert("Empty message!");
+			return;
+		}
+		const yktssignaturetoverify = document.getElementById('yktssignaturetoverify');
+		if (!yktssignaturetoverify) {
+			document.getElementById("yktsverifyresult").innerHTML = "false";
+			alert("Empty signature!");
+			return;
+		}
+		const yktsaddresstoverify = document.getElementById('yktsaddresstoverify');
+		if (!yktsaddresstoverify) {
+			document.getElementById("yktsverifyresult").innerHTML = "false";
+			alert("Empty address!");
+			return;
+		}
+		const message = yktsmessagetoverify.value;
+		console.log("Verify Message:", message);
+		const signature = yktssignaturetoverify.value;
+		console.log("Verify Signature: ", signature);
+		const address = yktsaddresstoverify.value;
+
+		// calculate hash of message
+		const hash = web3.utils.sha3(message);
+		// verify the signer for the hash of the message
+		const ret = await xyz_ykts_is_signer(address, hash, signature);
+		// recover signer address
+		const recover = await xyz_ykts_recover(hash, signature);
+		console.log("Verify Recover: ", recover);
+
+		// update status
+		document.getElementById("yktsverifyresult").innerHTML = ret;
+	}
 };
 
 

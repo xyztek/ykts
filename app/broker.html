@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ethereum Wallet Tests</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="./enroll.js" type="module"></script>
+</head>
+<body>
+  <h1>Ethereum Wallet Tests</h1>
+  <p>
+    <span style="color:red;font-weight:bold" id="providernote"></span>
+  </p>
+
+  <h2>Check default Ethereum account ETH balance via Metamask</h2>
+  <p>Your default Ethereum address balance is:
+    <div>Address: <span style="color:blue;font-weight:bold" id="defaultaddress"></span></div>
+    <div>Balance:<span style="color:blue;font-weight:bold" id="etherbalanceauto"></span></div>
+  </p>
+
+  <h2>Sign/Verify Sanity Check</h2>
+  <input type="text" size="50" id="sanitymessage" placeholder="enter message to sign"></input>
+  <br />
+  <button id="send" onclick="App.message_test()">Message</button>
+  <p>
+    <div><b>Sanity Result: </b><span style="color:blue;font-weight:bold" id="sanityresult"></span></div>
+  </p>
+
+  <h2>Sign a selected message with your default Ethereum account via Metamask</h2>
+  <input type="text" size="50" id="yktsmessagetosign" placeholder="enter message to sign"></input>
+  <br />
+  <button id="send" onclick="App.message_sign()">Sign Message</button>
+  <p>
+    <div><b>Message Hash: <span style="color:blue;font-weight:bold" id="yktsmessagehash"></span></div>
+    <div><b>Message Signature: </b><span style="color:blue;font-weight:bold" id="yktsmessagesignature"></span></div>
+    <div><b>Message Signer: </b><span style="color:blue;font-weight:bold" id="yktssigner"></span></div>
+  </p>
+
+  <h2>Verify the signer of a selected message with your default Ethereum account via Metamask</h2>
+  <input type="text" size="50" id="yktsmessagetoverify" placeholder="enter contents"></input>
+  <br/>
+  <input type="text" size="50" id="yktssignaturetoverify" placeholder="enter signature"></input>
+  <br/>
+  <input type="text" size="50" id="yktsaddresstoverify" placeholder="enter signer address"></input>
+  <br />
+  <button id="send" onclick="App.message_verify()">Verify Message</button>
+  <p>
+    <div><b>Verify Result: </b><span style="color:blue;font-weight:bold" id="yktsverifyresult"></span></div>
+  </p>
+
+</body>
+</html>

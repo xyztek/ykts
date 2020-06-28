@@ -30,8 +30,6 @@ contract YKTS is AccessControl {
         // set of delegated proxy addresses verified in PoA
         EnumerableSet.AddressSet proxies;
     }
-    // map real-life notary id's to entities
-    mapping(string => Entity) private entity_id_map;
     // map addresses to entities
     mapping(address => Entity) private entity_address_map;
 
@@ -44,8 +42,6 @@ contract YKTS is AccessControl {
         // hash of the Proof of Competence document
         bytes32 PoC;
     }
-    // map real-life notary id's to brokers
-    mapping(string => Broker) private broker_id_map;
     // map addresses to brokers
     mapping(address => Broker) private broker_address_map;
 
@@ -54,15 +50,18 @@ contract YKTS is AccessControl {
     EnumerableSet.AddressSet broker_approval_queue;
 
     // roles in the system ADMIN > NOTARY > ENTITY & BROKER
-    bytes32 public constant NOTARY_ROLE = keccak256("NOTARY_ROLE");
-    bytes32 public constant ENTITY_ROLE = keccak256("ENTITY_ROLE");
-    bytes32 public constant BROKER_ROLE = keccak256("BROKER_ROLE");
+    bytes32 private constant NOTARY_ROLE = keccak256("NOTARY_ROLE");
+    bytes32 private constant ENTITY_ROLE = keccak256("ENTITY_ROLE");
+    bytes32 private constant BROKER_ROLE = keccak256("BROKER_ROLE");
 
     /// @dev Add contract creator to the admin role as a member.
     constructor() public {
         // Grant the contract deployer the default admin role: it will be able
         // to grant and revoke any roles
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _setRoleAdmin(NOTARY_ROLE, DEFAULT_ADMIN_ROLE);
+        _setRoleAdmin(ENTITY_ROLE, NOTARY_ROLE);
+        _setRoleAdmin(BROKER_ROLE, NOTARY_ROLE);
     }
 
     /// @dev Restricted to members of the admin role.
@@ -87,19 +86,19 @@ contract YKTS is AccessControl {
     }
 
     /// @dev Return `true` if the account belongs to the admin role.
-    function isAdmin(address account) public virtual view returns (bool) {
+    function isAdmin(address account) public view returns (bool) {
         return hasRole(DEFAULT_ADMIN_ROLE, account);
     }
     /// @dev Return `true` if the account belongs to the notary role.
-    function isNotary(address account) public virtual view returns (bool) {
+    function isNotary(address account) public view returns (bool) {
         return hasRole(NOTARY_ROLE, account);
     }
     /// @dev Return `true` if the account belongs to the entity role.
-    function isEntity(address account) public virtual view returns (bool) {
+    function isEntity(address account) public view returns (bool) {
         return hasRole(ENTITY_ROLE, account);
     }
     /// @dev Return `true` if the account belongs to the broker role.
-    function isBroker(address account) public virtual view returns (bool) {
+    function isBroker(address account) public view returns (bool) {
         return hasRole(BROKER_ROLE, account);
     }
 
@@ -149,9 +148,50 @@ contract YKTS is AccessControl {
     function renounceEntity() public virtual {
         renounceRole(ENTITY_ROLE, msg.sender);
     }
-    /// @dev Remove oneself from the entity role.
+    /// @dev Remove oneself from the broker role.
     function renounceBroker() public virtual {
         renounceRole(BROKER_ROLE, msg.sender);
+    }
+
+
+    /// @dev Return `true` if the broker approval request is valid and queued for notary
+    function requestBrokerApproval(string memory id, bytes32 poc_hash, bytes memory signature) public returns(bool) {
+        // check if id is empty
+        require(bytes(id).length > 0, "Broker id can not be empty!");
+        // check address mapping, if present
+        require(bytes(broker_address_map[msg.sender].id).length == 0, "Broker already approved, address present!");
+        // check Proof of Competence document hash signature
+        if (isSigner(msg.sender, poc_hash, signature) != true) {
+            return false;
+        }
+        // add to notary approval queue
+        if (broker_approval_queue.add(msg.sender) != true) {
+            return false;
+        }
+        // fill the mapping once queued for approval
+        broker_address_map[msg.sender].id = id;
+        broker_address_map[msg.sender].owner = msg.sender;
+        broker_address_map[msg.sender].PoC = poc_hash;
+        return true;
+    }
+    /// @dev Return `true` if the broker approval request is valid and queued for notary
+    function getBrokerQueueLength() public view onlyNotary returns(uint256) {
+        return broker_approval_queue.length();
+    }
+    /// @dev Return address of the broker at (notarization) queue index
+    function getBrokerQueueAt(uint256 index) public view onlyNotary returns(address) {
+        require(broker_approval_queue.length() > index, "Broker queue length should be greater than index!");
+        return broker_approval_queue.at(index);
+    }
+    /// @dev Return address of the broker at (notarization) queue index
+    function approveBroker(address broker_address) public onlyNotary returns(bool) {
+        require(broker_approval_queue.contains(broker_address), "Broker queue should contain the address!");
+        require(bytes(broker_address_map[broker_address].id).length > 0, "Broker should have applied before!");
+        if (broker_approval_queue.remove(broker_address) != true) {
+            return false;
+        }
+        grantRole(BROKER_ROLE, broker_address);
+        return true;
     }
 
 

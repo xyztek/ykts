@@ -12,8 +12,44 @@ import "../node_modules/openzeppelin-solidity/contracts/access/AccessControl.sol
  */
 contract YKTS is AccessControl {
 
+    // for EC-recover functionality
     using ECDSA for bytes32;
+    // for safe add(), remove() functionality of address sets
+    using EnumerableSet for EnumerableSet.AddressSet;
+    // possible use of Address extensions like isContract()
+    using Address for address;
 
+    // everything about entities
+    struct Entity {
+        // application id given by Digital Notary/MERSIS
+        string id;
+        // address of the owner of the entity
+        address owner;
+        // hash of the Power of Attorney document
+        bytes32 PoA;
+        // set of delegated proxy addresses verified in PoA
+        EnumerableSet.AddressSet proxies;
+    }
+    // map real-life notary id's to entities
+    mapping(string => Entity) private entity_id_map;
+    // map addresses to entities
+    mapping(address => Entity) private entity_address_map;
+
+    // everything about brokers
+    struct Broker {
+        // application id given by Digital Notary/MERSIS
+        string id;
+        // address of the broker
+        address owner;
+        // hash of the Proof of Competence document
+        bytes32 PoC;
+    }
+    // map real-life notary id's to brokers
+    mapping(string => Broker) private broker_id_map;
+    // map addresses to brokers
+    mapping(address => Broker) private broker_address_map;
+
+    // roles in the system ADMIN > NOTARY > ENTITY & BROKER
     bytes32 public constant NOTARY_ROLE = keccak256("NOTARY_ROLE");
     bytes32 public constant ENTITY_ROLE = keccak256("ENTITY_ROLE");
     bytes32 public constant BROKER_ROLE = keccak256("BROKER_ROLE");
@@ -72,7 +108,6 @@ contract YKTS is AccessControl {
     function renounceAdmin() public virtual {
         renounceRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
-
     /// @dev Add an account to the notary role. Restricted to admins.
     function addNotary(address account) public virtual onlyAdmin {
         grantRole(NOTARY_ROLE, account);

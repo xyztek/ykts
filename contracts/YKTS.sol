@@ -49,6 +49,10 @@ contract YKTS is AccessControl {
     // map addresses to brokers
     mapping(address => Broker) private broker_address_map;
 
+    // entity and broker application queues for notaries to approve
+    EnumerableSet.AddressSet entity_approval_queue;
+    EnumerableSet.AddressSet broker_approval_queue;
+
     // roles in the system ADMIN > NOTARY > ENTITY & BROKER
     bytes32 public constant NOTARY_ROLE = keccak256("NOTARY_ROLE");
     bytes32 public constant ENTITY_ROLE = keccak256("ENTITY_ROLE");

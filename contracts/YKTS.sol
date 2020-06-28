@@ -104,10 +104,6 @@ contract YKTS is AccessControl {
     function addAdmin(address account) public virtual onlyAdmin {
         grantRole(DEFAULT_ADMIN_ROLE, account);
     }
-    /// @dev Remove oneself from the admin role.
-    function renounceAdmin() public virtual {
-        renounceRole(DEFAULT_ADMIN_ROLE, msg.sender);
-    }
     /// @dev Add an account to the notary role. Restricted to admins.
     function addNotary(address account) public virtual onlyAdmin {
         grantRole(NOTARY_ROLE, account);
@@ -115,6 +111,43 @@ contract YKTS is AccessControl {
     /// @dev Remove an account from the notary role. Restricted to admins.
     function removeNotary(address account) public virtual onlyAdmin {
         revokeRole(NOTARY_ROLE, account);
+    }
+    /// @dev Remove oneself from the admin role.
+    function renounceAdmin() public virtual {
+        renounceRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    }
+    // TODO removeAdmin() discussion!
+
+
+    /// @dev Add an account to the entity role. Restricted to notaries.
+    function addEntity(address account) public virtual onlyNotary {
+        grantRole(ENTITY_ROLE, account);
+    }
+    /// @dev Remove an account from the entity role. Restricted to notaries.
+    function removeEntity(address account) public virtual onlyNotary {
+        revokeRole(ENTITY_ROLE, account);
+    }
+    /// @dev Add an account to the broker role. Restricted to notaries.
+    function addBroker(address account) public virtual onlyNotary {
+        grantRole(BROKER_ROLE, account);
+    }
+    /// @dev Remove an account from the broker role. Restricted to notaries.
+    function removeBroker(address account) public virtual onlyNotary {
+        revokeRole(BROKER_ROLE, account);
+    }
+    /// @dev Remove oneself from the notary role.
+    function renounceNotary() public virtual {
+        renounceRole(NOTARY_ROLE, msg.sender);
+    }
+
+
+    /// @dev Remove oneself from the entity role.
+    function renounceEntity() public virtual {
+        renounceRole(ENTITY_ROLE, msg.sender);
+    }
+    /// @dev Remove oneself from the entity role.
+    function renounceBroker() public virtual {
+        renounceRole(BROKER_ROLE, msg.sender);
     }
 
 

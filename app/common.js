@@ -1,4 +1,3 @@
-
 export async function xyz_get_contract(contract_name) {
 	// parse compiled smart contract JSON
 	var contract_json;
@@ -26,6 +25,19 @@ export async function xyz_get_contract(contract_name) {
 	return [contract_address, contract_abi];
 }
 
+export async function xyz_ykts_broker_request(address, id, msg_hash, signature) {
+	// parse contract and get abi & address
+	var contractvars = await xyz_get_contract("YKTS.json");
+	const contract_address = contractvars[0];
+	const contract_abi = contractvars[1];
+	// create smart contract
+	const contract = new web3.eth.Contract(contract_abi, contract_address);
+
+	// request for approval
+	const response = await contract.methods.requestBrokerApproval(id, msg_hash, signature).send({from: address});
+	return response;
+}
+
 export async function xyz_ykts_sign(msg_hash, address) {
 	// parse contract and get abi & address
 	var contractvars = await xyz_get_contract("YKTS.json");
@@ -37,7 +49,7 @@ export async function xyz_ykts_sign(msg_hash, address) {
 	// format message hash for eth_sign compatability (recover() needs this)
 	const eth_hash = await contract.methods.hashToSign(msg_hash).call();
 	// sign formatted hash
-	var signature = await web3.eth.sign(eth_hash, address);
+	const signature = await web3.eth.sign(eth_hash, address);
 	return signature;
 }
 

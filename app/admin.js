@@ -50,17 +50,34 @@ window.App = {
 
 		// get admin count
 		const count = await ykts_contract.methods.getAdminCount().call();
-		console.log("Admin Count: ", count)
+		console.log("Admin Count:", count)
 
 		var addrs = [];
 		for (var i = 0; i < count; i++) {
 			addrs[i] = await ykts_contract.methods.getAdmin(i).call();
 		}
-		console.log("Admin Addresses: ", addrs)
+		console.log("Admin Addresses:", addrs)
 
-		document.getElementById("admin_status").innerHTML = "2";
+		document.getElementById("admin_status").innerHTML = "OK";
 		document.getElementById("admin_count").innerHTML = count;
 		document.getElementById("admin_addresses").innerHTML = addrs;
+	},
+
+	add_admin: async () => {
+		var self = this;
+		document.getElementById("add_admin_status").innerHTML = "Pending";
+
+		const new_admin_address = document.getElementById('new_admin_address')
+		if (!new_admin_address) {
+			alert("Empty admin address!");
+			return;
+		}
+		const address = new_admin_address.value;
+		// add admin
+		const response = await ykts_contract.methods.addAdmin(address).send({from: default_address});
+		console.log("Admin Add:", response);
+
+		document.getElementById("add_admin_status").innerHTML = "OK";
 	},
 };
 

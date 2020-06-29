@@ -40,8 +40,6 @@ window.App = {
 			alert("Unable to get ./build/YKTS.json smart contract on '" + network_name + "' network, aborting!");
 			return;
 		}
-
-
 	},
 
 	list_admins: async () => {
@@ -65,7 +63,6 @@ window.App = {
 		document.getElementById("admin_addresses").innerHTML = addrs;
 	},
 };
-
 
 // hooking up web3 provider
 window.addEventListener('load', async () => {

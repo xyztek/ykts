@@ -25,6 +25,12 @@ export async function xyz_get_contract(contract_name) {
 	return [contract_address, contract_abi];
 }
 
+export async function xyz_ykts_add_notary(contract, address) {
+	// request for approval
+	const ret = await contract.methods.addNotary(address).send({from: address});
+	return ret;
+}
+
 export async function xyz_ykts_broker_request(address, id, msg_hash, signature) {
 	// parse contract and get abi & address
 	var contractvars = await xyz_get_contract("YKTS.json");
@@ -37,6 +43,7 @@ export async function xyz_ykts_broker_request(address, id, msg_hash, signature) 
 	const response = await contract.methods.requestBrokerApproval(id, msg_hash, signature).send({from: address});
 	return response;
 }
+
 
 export async function xyz_ykts_sign(msg_hash, address) {
 	// parse contract and get abi & address

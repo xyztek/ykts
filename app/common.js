@@ -1,3 +1,4 @@
+
 export async function xyz_get_contract(contract_name) {
 	// parse compiled smart contract JSON
 	var contract_json;
@@ -19,8 +20,8 @@ export async function xyz_get_contract(contract_name) {
 	const contract_address = contract_json.networks[networkId.toString()].address;
 	const contract_abi = contract_json.abi;
 	// log
-	//console.log("Smart Contract", contract_name, "Address", contract_address);
-	//console.log("Smart Contract", contract_name, "ABI", contract_abi);
+	console.log(contract_name, "Address:", contract_address);
+	console.log(contract_name, "ABI:", contract_abi);
 	// return tuple
 	return [contract_address, contract_abi];
 }

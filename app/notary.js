@@ -1,7 +1,7 @@
-import { xyz_get_contract, xyz_ykts_broker_request, xyz_ykts_recover, xyz_ykts_is_signer, xyz_ykts_sign, xyz_create_web3_provider, xyz_get_balance, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
+import { xyz_get_contract, xyz_ykts_add_notary, xyz_ykts_broker_request, xyz_ykts_recover, xyz_ykts_is_signer, xyz_ykts_sign, xyz_create_web3_provider, xyz_get_balance, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
 
 // default account
-var account;
+var ykts_contract;
 
 window.App = {
 	start: async () => {
@@ -25,56 +25,43 @@ window.App = {
 			alert("Couldn't get any the Ethereum network, probably Metamask/Mist/Infura is not present!");
 			return;
 		}
+
+		// parse contract and get abi & address
+		var contractvars = await xyz_get_contract("YKTS.json");
+		const contract_address = contractvars[0];
+		const contract_abi = contractvars[1];
+		// create smart contract
+		ykts_contract = new web3.eth.Contract(contract_abi, contract_address);
+
 	},
 
-	broker_request: async () => {
+	list_brokers: async () => {
 		var self = this;
 		document.getElementById("brokerrequeststatus").innerHTML = "Pending";
-		document.getElementById("brokeraddress").innerHTML = 0;
-		document.getElementById("brokerid").innerHTML = 0;
-		document.getElementById("brokerhash").innerHTML = 0;
-		document.getElementById("brokersignature").innerHTML = 0;
-
-		const brokerid = document.getElementById('brokerappid')
-		if (!brokerid) {
-			alert("Empty Id!");
-			return;
-		}
-		const id = brokerid.value;
-
-		const brokermessage = document.getElementById('brokermessage')
-		if (!brokermessage) {
-			alert("Empty message!");
-			return;
-		}
-		const message = brokermessage.value;
-		console.log("Broker Message:", message);
-		// calculate hash of message
-		const hash = web3.utils.sha3(message);
-		console.log("Broker Hash:", hash);
+		document.getElementById("brokerqueuelength").innerHTML = 0;
+		document.getElementById("brokeraddresses").innerHTML = 0;
 
 		// sign hash of message with default account
 		const address = await xyz_get_account_by_index(0);
-		const signature = await xyz_ykts_sign(hash, address);
-		console.log("Broker Signature: ", signature);
 
-		// recover signer address
-		const recover = await xyz_ykts_recover(hash, signature);
-		console.log("Broker Recover: ", recover);
+		const h = await xyz_ykts_add_notary(ykts_contract, address);
+		console.log("hey: ", h);
 
-		if (address != recover) {
-			alert("Address/Recover mismatch!");
-			return;
+
+		// broker queue length
+		const length = await ykts_contract.methods.getBrokerQueueLength().call();
+		console.log("Broker Length: ", length)
+
+		var addresses;
+		for (var i = 0; i < length; i++) {
+			addresses[i] = await ykts_contract.methods.getBrokerQueueAt(i).call();
 		}
-		// request for approval
-		const response = await xyz_ykts_broker_request(address, id, hash, signature);
-		console.log("Broker Response: ", response)
+		console.log("Broker Addresses: ", addresses)
 
 		document.getElementById("brokerrequeststatus").innerHTML = response.status;
-		document.getElementById("brokeraddress").innerHTML = address;
-		document.getElementById("brokerid").innerHTML = id;
-		document.getElementById("brokerhash").innerHTML = hash;
-		document.getElementById("brokersignature").innerHTML = signature;
+		document.getElementById("brokerqueuelength").innerHTML = length;
+		document.getElementById("brokeraddresses").innerHTML = addresses;
+
 	},
 
 };

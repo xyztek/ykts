@@ -13,9 +13,14 @@ export async function xyz_ykts_get_contract() {
 			contract_json = data;
 		},
 		error: function (error) {
+			console.error("YKTS: JSON request");
 			return null;
 		}
 	});
+	if (contract_json == null) {
+		console.error("YKTS: empty contract");
+		return null;
+	}
 	// get smart contract address and ABI
 	var network_id;
 	var contract_address;
@@ -24,10 +29,14 @@ export async function xyz_ykts_get_contract() {
 		// get network id
 		network_id = await web3.eth.net.getId();
 		// get smart contract address & abi
+		if (contract_json.networks[network_id.toString()] == null) {
+			console.error("YKTS: invalid network");
+			return null;
+		}
 		contract_address = contract_json.networks[network_id.toString()].address;
 		contract_abi = contract_json.abi;
 	} catch (e) {
-		console.log(e.message);
+		console.error("YKTS:" + e.message);
 		return null;
 	}
 	// log

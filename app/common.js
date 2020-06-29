@@ -35,13 +35,13 @@ export async function xyz_get_accounts() {
 	return accounts;
 }
 
-export async function xyz_get_balance(walletAddress) {
+export async function xyz_get_balance(address) {
 	try {
-		if (web3.utils.isAddress(walletAddress) != true) {
+		if (web3.utils.isAddress(address) != true) {
 			console.log("invalid Ethereum address");
 			return null;
 		}
-		const balance = await web3.eth.getBalance(walletAddress);
+		const balance = await web3.eth.getBalance(address);
 		console.log("Ethereum Balance", balance);
 		return balance;
 	} catch (e) {
@@ -54,7 +54,7 @@ export async function xyz_get_balance(walletAddress) {
 export async function xyz_get_network_name() {
 	try {
 		const network = await web3.eth.net.getNetworkType();
-		console.log("Ethereum Network", network);
+		console.log("Ethereum Network:", network);
 		return network;
 	} catch (e) {
 		console.log(e.message);
@@ -66,7 +66,7 @@ export async function xyz_get_network_name() {
 export async function xyz_get_network_id() {
 	try {
 		const id = await web3.eth.net.getId()
-		console.log("Ethereum Network Id", id);
+		console.log("Ethereum Network Id:", id);
 		return id;
 	} catch (e) {
 		console.log(e.message);

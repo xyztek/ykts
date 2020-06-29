@@ -16,19 +16,18 @@ window.App = {
 				alert("Couldn't get any Web3 providers, probably Metamask/Mist/Infura is not present!");
 				return;
 		}
-		// check Metamask availability and report
-		if (web3.currentProvider.isMetaMask) {
-			document.getElementById("note").innerHTML = "Metamask is available, please set network to Rinkeby!"
-		} else {
-			document.getElementById("note").innerHTML = "Metamask is NOT available, please use a local node or set 'infuraAPIKey' and connect to Rinkeby network! Some functionality will not work without Metamask";
-		}
-		// get network name
-		const network = await xyz_get_network_name();
-		if (network == null) {
-			alert("Couldn't get any the Ethereum network, probably Metamask/Mist/Infura is not present!");
+		const network_name = await xyz_get_network_name();
+		if (network_name == null) {
+			alert("Couldn't get Ethereum network name, aborting!");
 			return;
 		}
-		
+		// check Metamask availability and report
+		if (web3.currentProvider.isMetaMask) {
+			document.getElementById("note").innerHTML = "Metamask is available and Ethereum network is set to '" + network_name + "'";
+		} else {
+			document.getElementById("note").innerHTML = "Metamask is NOT available, aborting!";
+			return;
+		}
 		// get default address
 		default_address = await xyz_get_account_by_index(0);
 		if (default_address == null) {
@@ -38,7 +37,7 @@ window.App = {
 		// parse contract and get abi & address
 		ykts_contract = await xyz_ykts_get_contract();
 		if (ykts_contract == null) {
-			alert("Unable to get ./build/YKTS.json smart contract, aborting!");
+			alert("Unable to get ./build/YKTS.json smart contract on '" + network_name + "' network, aborting!");
 			return;
 		}
 

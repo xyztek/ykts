@@ -1,93 +1,4 @@
 
-export async function xyz_get_contract(contract_name) {
-	// parse compiled smart contract JSON
-	var contract_json;
-	$.ajax({
-		url: contract_name,
-		dataType: 'json',
-		async: false,
-		data: {},
-		success: function(data) {
-			contract_json = data;
-		},
-		error: function (error) {
-			return [null, null];
-		}
-	});
-	// get network id
-	const networkId = await web3.eth.net.getId();
-	// get smart contract address & abi
-	const contract_address = contract_json.networks[networkId.toString()].address;
-	const contract_abi = contract_json.abi;
-	// log
-	console.log(contract_name, "Address:", contract_address);
-	console.log(contract_name, "ABI:", contract_abi);
-	// return tuple
-	return [contract_address, contract_abi];
-}
-
-export async function xyz_ykts_add_notary(contract, address) {
-	// request for approval
-	const ret = await contract.methods.addNotary(address).send({from: address});
-	return ret;
-}
-
-export async function xyz_ykts_broker_request(address, id, msg_hash, signature) {
-	// parse contract and get abi & address
-	var contractvars = await xyz_get_contract("YKTS.json");
-	const contract_address = contractvars[0];
-	const contract_abi = contractvars[1];
-	// create smart contract
-	const contract = new web3.eth.Contract(contract_abi, contract_address);
-
-	// request for approval
-	const response = await contract.methods.requestBrokerApproval(id, msg_hash, signature).send({from: address});
-	return response;
-}
-
-
-export async function xyz_ykts_sign(msg_hash, address) {
-	// parse contract and get abi & address
-	var contractvars = await xyz_get_contract("YKTS.json");
-	const contract_address = contractvars[0];
-	const contract_abi = contractvars[1];
-	// create smart contract
-	const contract = new web3.eth.Contract(contract_abi, contract_address);
-
-	// format message hash for eth_sign compatability (recover() needs this)
-	const eth_hash = await contract.methods.hashToSign(msg_hash).call();
-	// sign formatted hash
-	const signature = await web3.eth.sign(eth_hash, address);
-	return signature;
-}
-
-export async function xyz_ykts_is_signer(owner, hash, signature) {
-	// parse contract and get abi & address
-	var contractvars = await xyz_get_contract("YKTS.json");
-	const contract_address = contractvars[0];
-	const contract_abi = contractvars[1];
-	// create smart contract
-	const contract = new web3.eth.Contract(contract_abi, contract_address);
-
-	// check if 'hash' is signed by the 'owner'
-	const result = await contract.methods.isSigner(owner, hash, signature).call();
-	return result;
-}
-
-export async function xyz_ykts_recover(hash, signature) {
-	// parse contract and get abi & address
-	var contractvars = await xyz_get_contract("YKTS.json");
-	const contract_address = contractvars[0];
-	const contract_abi = contractvars[1];
-	// create smart contract
-	const contract = new web3.eth.Contract(contract_abi, contract_address);
-
-	// convert to Ethereum hash
-	const ehash = await contract.methods.hashToSign(hash).call();
-	// recover signer address
-	const address = await contract.methods.recover(ehash, signature).call();
-	return address;
-}
 
 export async function xyz_get_account_by_index(index) {
 	var account;
@@ -139,6 +50,7 @@ export async function xyz_get_balance(walletAddress) {
 	}
 }
 
+// get network name
 export async function xyz_get_network_name() {
 	try {
 		const network = await web3.eth.net.getNetworkType();
@@ -150,6 +62,7 @@ export async function xyz_get_network_name() {
 	}
 }
 
+// get Ethereum network id
 export async function xyz_get_network_id() {
 	try {
 		const id = await web3.eth.net.getId()

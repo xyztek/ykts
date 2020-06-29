@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Tests</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="./admin.js" type="module"></script>
+</head>
+<body>
+  <h1>Admin Tests</h1>
+  <p>
+    <span style="color:red;font-weight:bold" id="note"></span>
+  </p>
+
+  <h2>List of Admins</h2>
+  <button id="send" onclick="App.list_admins()">List Admins</button>
+  <p>
+    <div><b>Status: <span style="color:blue;font-weight:bold" id="admin_status"></span></div>
+    <div><b>Admin Count: <span style="color:blue;font-weight:bold" id="admin_count"></span></div>
+    <div><b>Admin Addrs: <span style="color:blue;font-weight:bold" id="admin_addresses"></span></div>
+  </p>
+
+</body>
+</html>

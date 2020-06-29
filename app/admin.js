@@ -1,0 +1,70 @@
+import { xyz_get_contract, xyz_ykts_add_notary, xyz_create_web3_provider, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
+
+// YKTS contract interface
+var ykts_contract;
+// default address
+var default_address;
+
+window.App = {
+	start: async () => {
+		var self = this;
+
+		// get provider name
+		const provider = await xyz_get_provider_name();
+		if (provider === null) {
+				alert("Couldn't get any Web3 providers, probably Metamask/Mist/Infura is not present!");
+				return;
+		}
+		// check Metamask availability and report
+		if (web3.currentProvider.isMetaMask) {
+			document.getElementById("note").innerHTML = "Metamask is available, please set network to Rinkeby!"
+		} else {
+			document.getElementById("note").innerHTML = "Metamask is NOT available, please use a local node or set 'infuraAPIKey' and connect to Rinkeby network! Some functionality will not work without Metamask";
+		}
+		// get network name
+		const network = await xyz_get_network_name();
+		if (network === null) {
+			alert("Couldn't get any the Ethereum network, probably Metamask/Mist/Infura is not present!");
+			return;
+		}
+		
+		// get default address
+		const address = await xyz_get_account_by_index(0);
+
+		// parse contract and get abi & address
+		var contractvars = await xyz_get_contract("YKTS.json");
+		const contract_address = contractvars[0];
+		const contract_abi = contractvars[1];
+		// create smart contract
+		ykts_contract = new web3.eth.Contract(contract_abi, contract_address);
+
+	},
+
+	list_admins: async () => {
+		var self = this;
+		document.getElementById("admin_status").innerHTML = "Pending";
+		document.getElementById("admin_count").innerHTML = 0;
+		document.getElementById("admin_addresses").innerHTML = 0;
+
+		// get admin count
+		const count = await ykts_contract.methods.getAdminCount().call();
+		console.log("Admin Count: ", count)
+
+		var addrs = [];
+		for (var i = 0; i < count; i++) {
+			addrs[i] = await ykts_contract.methods.getAdmin(i).call();
+		}
+		console.log("Admin Addresses: ", addrs)
+
+		document.getElementById("admin_status").innerHTML = "2";
+		document.getElementById("admin_count").innerHTML = count;
+		document.getElementById("admin_addresses").innerHTML = addrs;
+	},
+};
+
+
+// hooking up web3 provider
+window.addEventListener('load', async () => {
+	xyz_create_web3_provider();
+	App.start();
+});

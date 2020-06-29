@@ -102,26 +102,46 @@ contract YKTS is AccessControl {
         return hasRole(BROKER_ROLE, account);
     }
 
-
     /// @dev Add an account to the admin role. Restricted to admins.
-    function addAdmin(address account) public virtual onlyAdmin {
+    function addAdmin(address account) public onlyAdmin {
         grantRole(DEFAULT_ADMIN_ROLE, account);
     }
+    /// @dev Remove oneself from the admin role.
+    function renounceAdmin() public {
+        renounceRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    }
+    /// @dev Get the total number of admins.
+    function getAdminCount() public view returns (uint256) {
+        return getRoleMemberCount(DEFAULT_ADMIN_ROLE);
+    }
+    /// @dev Get the total number of admins.
+    function getAdmin(uint256 index) public view returns (address) {
+        return getRoleMember(DEFAULT_ADMIN_ROLE, index);
+    }
     /// @dev Add an account to the notary role. Restricted to admins.
-    function addNotary(address account) public virtual onlyAdmin {
+    function addNotary(address account) public onlyAdmin {
         grantRole(NOTARY_ROLE, account);
     }
     /// @dev Remove an account from the notary role. Restricted to admins.
-    function removeNotary(address account) public virtual onlyAdmin {
+    function removeNotary(address account) public onlyAdmin {
         revokeRole(NOTARY_ROLE, account);
     }
-    /// @dev Remove oneself from the admin role.
-    function renounceAdmin() public virtual {
-        renounceRole(DEFAULT_ADMIN_ROLE, msg.sender);
-    }
     // TODO removeAdmin() discussion!
+    // TODO admin transparency (length, list)?
 
 
+    /// @dev Remove oneself from the notary role.
+    function renounceNotary() public virtual {
+        renounceRole(NOTARY_ROLE, msg.sender);
+    }
+    /// @dev Get the total number of notaries.
+    function getNotaryCount() public view returns (uint256) {
+        return getRoleMemberCount(NOTARY_ROLE);
+    }
+    /// @dev Get the total number of notaries.
+    function getNotary(uint256 index) public view returns (address) {
+        return getRoleMember(NOTARY_ROLE, index);
+    }
     /// @dev Add an account to the entity role. Restricted to notaries.
     function addEntity(address account) public virtual onlyNotary {
         grantRole(ENTITY_ROLE, account);
@@ -138,10 +158,7 @@ contract YKTS is AccessControl {
     function removeBroker(address account) public virtual onlyNotary {
         revokeRole(BROKER_ROLE, account);
     }
-    /// @dev Remove oneself from the notary role.
-    function renounceNotary() public virtual {
-        renounceRole(NOTARY_ROLE, msg.sender);
-    }
+    // TODO notary transparency (length, list)?
 
 
     /// @dev Remove oneself from the entity role.

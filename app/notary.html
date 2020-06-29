@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ethereum Wallet Tests</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="./broker.js" type="module"></script>
+</head>
+<body>
+  <h1>Broker Tests</h1>
+  <p>
+    <span style="color:red;font-weight:bold" id="providernote"></span>
+  </p>
+
+  <h2>Broker Request Approval from Digital Notary</h2>
+  <input type="text" size="50" id="brokerappid" placeholder="enter application id from notary"></input>
+  <br />
+  <input type="text" size="50" id="brokermessage" placeholder="enter message to sign"></input>
+  <br />
+  <button id="send" onclick="App.broker_request()">Request</button>
+  <p>
+    <div><b>Status: <span style="color:blue;font-weight:bold" id="brokerrequeststatus"></span></div>
+    <div><b>Broker Address: <span style="color:blue;font-weight:bold" id="brokeraddress"></span></div>
+    <div><b>Broker AppID: <span style="color:blue;font-weight:bold" id="brokerid"></span></div>
+    <div><b>Broker PoC Hash: </b><span style="color:blue;font-weight:bold" id="brokerhash"></span></div>
+    <div><b>Broker Signature: </b><span style="color:blue;font-weight:bold" id="brokersignature"></span></div>
+  </p>
+
+</body>
+</html>

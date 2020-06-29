@@ -1,4 +1,5 @@
-import { xyz_get_contract, xyz_ykts_add_notary, xyz_create_web3_provider, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
+import { xyz_create_web3_provider, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
+import { xyz_ykts_get_contract, xyz_ykts_add_notary  } from './ykts.js';
 
 // YKTS contract interface
 var ykts_contract;
@@ -11,7 +12,7 @@ window.App = {
 
 		// get provider name
 		const provider = await xyz_get_provider_name();
-		if (provider === null) {
+		if (provider == null) {
 				alert("Couldn't get any Web3 providers, probably Metamask/Mist/Infura is not present!");
 				return;
 		}
@@ -23,20 +24,24 @@ window.App = {
 		}
 		// get network name
 		const network = await xyz_get_network_name();
-		if (network === null) {
+		if (network == null) {
 			alert("Couldn't get any the Ethereum network, probably Metamask/Mist/Infura is not present!");
 			return;
 		}
 		
 		// get default address
-		const address = await xyz_get_account_by_index(0);
-
+		default_address = await xyz_get_account_by_index(0);
+		if (default_address == null) {
+			alert("Unable to get default address, aborting!");
+			return;
+		}
 		// parse contract and get abi & address
-		var contractvars = await xyz_get_contract("YKTS.json");
-		const contract_address = contractvars[0];
-		const contract_abi = contractvars[1];
-		// create smart contract
-		ykts_contract = new web3.eth.Contract(contract_abi, contract_address);
+		ykts_contract = await xyz_ykts_get_contract();
+		if (ykts_contract == null) {
+			alert("Unable to get ./build/YKTS.json smart contract, aborting!");
+			return;
+		}
+
 
 	},
 

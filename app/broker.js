@@ -1,4 +1,4 @@
-import { xyz_get_contract, xyz_ykts_recover, xyz_ykts_is_signer, xyz_ykts_sign, xyz_create_web3_provider, xyz_get_balance, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
+import { xyz_get_contract, xyz_ykts_broker_request, xyz_ykts_recover, xyz_ykts_is_signer, xyz_ykts_sign, xyz_create_web3_provider, xyz_get_balance, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
 
 // default account
 var account;
@@ -66,8 +66,11 @@ window.App = {
 			alert("Address/Recover mismatch!");
 			return;
 		}
+		// request for approval
+		const response = await xyz_ykts_broker_request(address, id, hash, signature);
+		console.log("Broker Response: ", response)
 
-		document.getElementById("brokerrequeststatus").innerHTML = "Pending";
+		document.getElementById("brokerrequeststatus").innerHTML = response.status;
 		document.getElementById("brokeraddress").innerHTML = address;
 		document.getElementById("brokerid").innerHTML = id;
 		document.getElementById("brokerhash").innerHTML = hash;

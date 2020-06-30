@@ -36,7 +36,7 @@ export async function xyz_ykts_get_contract() {
 		contract_address = contract_json.networks[network_id.toString()].address;
 		contract_abi = contract_json.abi;
 	} catch (e) {
-		console.error("[xyz_ykts_get_contract]" + e.message);
+		console.error("[xyz_ykts_get_contract] " + e.message);
 		return null;
 	}
 	// log
@@ -57,7 +57,7 @@ export async function xyz_ykts_add_admin(contract, current_admin, new_admin) {
 		}
 		response = await contract.methods.addAdmin(new_admin).send({from: current_admin});
 	} catch (e) {
-		console.error("[xyz_ykts_add_admin]" + e.message);
+		console.error("[xyz_ykts_add_admin] " + e.message);
 		return null;
 	}
 	return response;
@@ -73,7 +73,7 @@ export async function xyz_ykts_renounce_admin(contract, current_admin) {
 		}
 		response = await contract.methods.renounceAdmin().send({from: current_admin});
 	} catch (e) {
-		console.error("[xyz_ykts_renounce_admin]" + e.message);
+		console.error("[xyz_ykts_renounce_admin] " + e.message);
 		return null;
 	}
 	return response;

@@ -34,27 +34,6 @@ window.App = {
 		}
 	},
 
-	list_admins: async () => {
-		var self = this;
-		document.getElementById("admin_status").innerHTML = "Pending";
-		document.getElementById("admin_count").innerHTML = 0;
-		document.getElementById("admin_addresses").innerHTML = 0;
-
-		// get admin count
-		const count = await ykts_contract.methods.getAdminCount().call();
-		console.log("Admin Count:", count)
-
-		var addrs = [];
-		for (var i = 0; i < count; i++) {
-			addrs[i] = await ykts_contract.methods.getAdmin(i).call();
-		}
-		console.log("Admin Addresses:", addrs)
-		// OK
-		document.getElementById("admin_status").innerHTML = "OK";
-		document.getElementById("admin_count").innerHTML = count;
-		document.getElementById("admin_addresses").innerHTML = addrs;
-	},
-
 	add_admin: async () => {
 		var self = this;
 		document.getElementById("add_admin_status").innerHTML = "Pending";

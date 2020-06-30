@@ -111,36 +111,66 @@ export async function xyz_ykts_remove_notary(contract, current_admin, removed_no
 	return response;
 }
 
+// sign message
+export async function xyz_ykts_sign(contract, owner, msg_hash) {
+	var eth_hash = null;
+	var signature = null;
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_sign] contract invalid");
+			return null;
+		}
+		// format message hash for eth_sign compatability (recover() needs this)
+		eth_hash = await contract.methods.hashToSign(msg_hash).call();
+		// sign formatted hash
+		signature = await web3.eth.sign(eth_hash, owner);
+	} catch (e) {
+		console.error("[xyz_ykts_sign] " + e.message);
+		return null;
+	}
+	return signature;
+}
 
+// recover the signer address from message hash
+export async function xyz_ykts_recover(contract, msg_hash, signature) {
+	var eth_hash = null;
+	var address = null;
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_recover] contract invalid");
+			return null;
+		}
+		// format message hash for eth_sign compatability (recover() needs this)
+		eth_hash = await contract.methods.hashToSign(msg_hash).call();
+		// recover signer address
+		address = await contract.methods.recover(eth_hash, signature).call();
+	} catch (e) {
+		console.error("[xyz_ykts_recover] " + e.message);
+		return null;
+	}
+	return address;
+}
 
-export async function xyz_ykts_broker_request(address, id, msg_hash, signature) {
-	// parse contract and get abi & address
-	var contractvars = await xyz_get_contract("YKTS.json");
-	const contract_address = contractvars[0];
-	const contract_abi = contractvars[1];
-	// create smart contract
-	const contract = new web3.eth.Contract(contract_abi, contract_address);
-
-	// request for approval
-	const response = await contract.methods.requestBrokerApproval(id, msg_hash, signature).send({from: address});
+// request broker approval
+export async function xyz_ykts_broker_request(contract, address, id, msg_hash, signature) {
+	var response = null;
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_broker_request] contract invalid");
+			return null;
+		}
+		// request for approval
+		response = await contract.methods.requestBrokerApproval(id, msg_hash, signature).send({from: address});
+	} catch (e) {
+		console.error("[xyz_ykts_broker_request] " + e.message);
+		return null;
+	}
 	return response;
 }
 
 
-export async function xyz_ykts_sign(msg_hash, address) {
-	// parse contract and get abi & address
-	var contractvars = await xyz_get_contract("YKTS.json");
-	const contract_address = contractvars[0];
-	const contract_abi = contractvars[1];
-	// create smart contract
-	const contract = new web3.eth.Contract(contract_abi, contract_address);
 
-	// format message hash for eth_sign compatability (recover() needs this)
-	const eth_hash = await contract.methods.hashToSign(msg_hash).call();
-	// sign formatted hash
-	const signature = await web3.eth.sign(eth_hash, address);
-	return signature;
-}
+
 
 export async function xyz_ykts_is_signer(owner, hash, signature) {
 	// parse contract and get abi & address
@@ -153,19 +183,4 @@ export async function xyz_ykts_is_signer(owner, hash, signature) {
 	// check if 'hash' is signed by the 'owner'
 	const result = await contract.methods.isSigner(owner, hash, signature).call();
 	return result;
-}
-
-export async function xyz_ykts_recover(hash, signature) {
-	// parse contract and get abi & address
-	var contractvars = await xyz_get_contract("YKTS.json");
-	const contract_address = contractvars[0];
-	const contract_abi = contractvars[1];
-	// create smart contract
-	const contract = new web3.eth.Contract(contract_abi, contract_address);
-
-	// convert to Ethereum hash
-	const ehash = await contract.methods.hashToSign(hash).call();
-	// recover signer address
-	const address = await contract.methods.recover(ehash, signature).call();
-	return address;
 }

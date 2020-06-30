@@ -79,14 +79,39 @@ export async function xyz_ykts_renounce_admin(contract, current_admin) {
 	return response;
 }
 
-
-
-
-export async function xyz_ykts_add_notary(contract, address) {
-	// request for approval
-	const ret = await contract.methods.addNotary(address).send({from: address});
-	return ret;
+// add notary (only allowed to admins)
+export async function xyz_ykts_add_notary(contract, current_admin, new_notary) {
+	var response = null;
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_add_notary] contract invalid");
+			return null;
+		}
+		response = await contract.methods.addNotary(new_notary).send({from: current_admin});
+	} catch (e) {
+		console.error("[xyz_ykts_add_notary] " + e.message);
+		return null;
+	}
+	return response;
 }
+
+// remove notary (only allowed to admins)
+export async function xyz_ykts_remove_notary(contract, current_admin, removed_notary) {
+	var response = null;
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_remove_notary] contract invalid");
+			return null;
+		}
+		response = await contract.methods.removeNotary(removed_notary).send({from: current_admin});
+	} catch (e) {
+		console.error("[xyz_ykts_remove_notary] " + e.message);
+		return null;
+	}
+	return response;
+}
+
+
 
 export async function xyz_ykts_broker_request(address, id, msg_hash, signature) {
 	// parse contract and get abi & address

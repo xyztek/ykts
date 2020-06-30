@@ -76,6 +76,27 @@ window.App = {
 		document.getElementById("notary_addresses").innerHTML = addrs;
 	},
 
+	list_brokers: async () => {
+		var self = this;
+		document.getElementById("broker_status").innerHTML = "Pending";
+		document.getElementById("broker_count").innerHTML = 0;
+		document.getElementById("broker_addresses").innerHTML = 0;
+
+		// get notary count
+		const count = await ykts_contract.methods.getBrokerCount().call();
+		console.log("Broker Count:", count)
+
+		var addrs = [];
+		for (var i = 0; i < count; i++) {
+			addrs[i] = await ykts_contract.methods.getBroker(i).call();
+		}
+		console.log("Broker Addresses:", addrs)
+		// OK
+		document.getElementById("broker_status").innerHTML = "OK";
+		document.getElementById("broker_count").innerHTML = count;
+		document.getElementById("broker_addresses").innerHTML = addrs;
+	},
+
 	list_broker_queue: async () => {
 		var self = this;
 		document.getElementById("broker_queue_status").innerHTML = "Pending";

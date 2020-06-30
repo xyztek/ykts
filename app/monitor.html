@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin Tests</title>
+  <title>Monitor Tests</title>
   <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="./admin.js" type="module"></script>
+  <script src="./monitor.js" type="module"></script>
 </head>
 <body>
-  <h1>Admin Tests</h1>
+  <h1>Monitor Tests</h1>
   <p>
     <span style="color:red;font-weight:bold" id="note"></span>
   </p>
@@ -18,40 +18,6 @@
     <div><b>Status: <span style="color:blue;font-weight:bold" id="admin_status"></span></div>
     <div><b>Admin Count: <span style="color:blue;font-weight:bold" id="admin_count"></span></div>
     <div><b>Admin Addrs: <span style="color:blue;font-weight:bold" id="admin_addresses"></span></div>
-  </p>
-
-  <h2>Add Admin</h2>
-  <input type="text" size="50" id="new_admin_address" placeholder="enter address for new admin"></input>
-  <br />
-  <button id="send" onclick="App.add_admin()">Add Admin</button>
-  <p>
-    <div><b>Status: <span style="color:blue;font-weight:bold" id="add_admin_status"></span></div>
-    <div><b>Sender Address: <span style="color:blue;font-weight:bold" id="add_admin_sender"></span></div>
-  </p>
-
-  <h2>Renounce Admin</h2>
-  <button id="send" onclick="App.renounce_admin()">Renounce Admin (Yourself)</button>
-  <p>
-    <div><b>Status: <span style="color:blue;font-weight:bold" id="renounce_admin_status"></span></div>
-    <div><b>Sender Address: <span style="color:blue;font-weight:bold" id="renounce_admin_sender"></span></div>
-  </p>
-
-  <h2>Add Notary</h2>
-  <input type="text" size="50" id="new_notary_address" placeholder="enter address for new notary"></input>
-  <br />
-  <button id="send" onclick="App.add_notary()">Add Notary</button>
-  <p>
-    <div><b>Status: <span style="color:blue;font-weight:bold" id="add_notary_status"></span></div>
-    <div><b>Sender Address: <span style="color:blue;font-weight:bold" id="add_notary_sender"></span></div>
-  </p>
-
-  <h2>Remove Notary</h2>
-  <input type="text" size="50" id="remove_notary_address" placeholder="enter notary address to remove"></input>
-  <br />
-  <button id="send" onclick="App.remove_notary()">Remove Notary</button>
-  <p>
-    <div><b>Status: <span style="color:blue;font-weight:bold" id="remove_notary_status"></span></div>
-    <div><b>Sender Address: <span style="color:blue;font-weight:bold" id="remove_notary_sender"></span></div>
   </p>
 
 </body>

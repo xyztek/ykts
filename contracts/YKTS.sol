@@ -130,6 +130,7 @@ contract YKTS is AccessControl {
     // TODO admin transparency (length, list)?
 
 
+
     /// @dev Remove oneself from the notary role.
     function renounceNotary() public virtual {
         renounceRole(NOTARY_ROLE, msg.sender);
@@ -142,33 +143,21 @@ contract YKTS is AccessControl {
     function getNotary(uint256 index) public view returns (address) {
         return getRoleMember(NOTARY_ROLE, index);
     }
-    /// @dev Add an account to the entity role. Restricted to notaries.
-    function addEntity(address account) public virtual onlyNotary {
-        grantRole(ENTITY_ROLE, account);
-    }
-    /// @dev Remove an account from the entity role. Restricted to notaries.
-    function removeEntity(address account) public virtual onlyNotary {
-        revokeRole(ENTITY_ROLE, account);
-    }
     /// @dev Add an account to the broker role. Restricted to notaries.
-    function addBroker(address account) public virtual onlyNotary {
+    function addBroker(address account) public onlyNotary returns(bool) {
+        require(broker_approval_queue.contains(account), "Broker queue should contain the address!");
+        require(bytes(broker_address_map[account].id).length > 0, "Broker should have applied before!");
+        if (broker_approval_queue.remove(account) != true) {
+            return false;
+        }
         grantRole(BROKER_ROLE, account);
+        return true;
     }
     /// @dev Remove an account from the broker role. Restricted to notaries.
-    function removeBroker(address account) public virtual onlyNotary {
+    function removeBroker(address account) public onlyNotary {
         revokeRole(BROKER_ROLE, account);
     }
-    // TODO notary transparency (length, list)?
 
-
-    /// @dev Remove oneself from the entity role.
-    function renounceEntity() public virtual {
-        renounceRole(ENTITY_ROLE, msg.sender);
-    }
-    /// @dev Remove oneself from the broker role.
-    function renounceBroker() public virtual {
-        renounceRole(BROKER_ROLE, msg.sender);
-    }
 
 
     /// @dev Return `true` if the broker approval request is valid and queued for notary
@@ -200,16 +189,26 @@ contract YKTS is AccessControl {
         require(broker_approval_queue.length() > index, "Broker queue length should be greater than index!");
         return broker_approval_queue.at(index);
     }
-    /// @dev Return address of the broker at (notarization) queue index
-    function approveBroker(address broker_address) public onlyNotary returns(bool) {
-        require(broker_approval_queue.contains(broker_address), "Broker queue should contain the address!");
-        require(bytes(broker_address_map[broker_address].id).length > 0, "Broker should have applied before!");
-        if (broker_approval_queue.remove(broker_address) != true) {
-            return false;
-        }
-        grantRole(BROKER_ROLE, broker_address);
-        return true;
+    /// @dev Remove oneself from the broker role.
+    function renounceBroker() public {
+        renounceRole(BROKER_ROLE, msg.sender);
     }
+
+
+
+    /// @dev Add an account to the entity role. Restricted to notaries.
+    function addEntity(address account) public virtual onlyNotary {
+        grantRole(ENTITY_ROLE, account);
+    }
+    /// @dev Remove an account from the entity role. Restricted to notaries.
+    function removeEntity(address account) public virtual onlyNotary {
+        revokeRole(ENTITY_ROLE, account);
+    }
+    /// @dev Remove oneself from the entity role.
+    function renounceEntity() public virtual {
+        renounceRole(ENTITY_ROLE, msg.sender);
+    }
+
 
 
     /// @dev Return `true` if the signature of the hash belongs to the specified owner.

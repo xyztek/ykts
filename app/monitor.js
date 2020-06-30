@@ -83,12 +83,12 @@ window.App = {
 		document.getElementById("broker_queue_addresses").innerHTML = 0;
 
 		// get broker queue count
-		const count = await ykts_contract.methods.getBrokerQueueLength().call();
+		const count = await ykts_contract.methods.getBrokerInQueueCount().call();
 		console.log("Broker Queue Count:", count)
 
 		var addrs = [];
 		for (var i = 0; i < count; i++) {
-			addrs[i] = await ykts_contract.methods.getBrokerQueueAt(i).call();
+			addrs[i] = await ykts_contract.methods.getBrokerInQueue(i).call();
 		}
 		console.log("Broker Queue Addresses:", addrs)
 		// OK

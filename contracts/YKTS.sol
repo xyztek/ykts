@@ -191,12 +191,12 @@ contract YKTS is AccessControl {
         broker_address_map[msg.sender].PoC = poc_hash;
         return true;
     }
-    /// @dev Return `true` if the broker approval request is valid and queued for notary
-    function getBrokerQueueLength() public view onlyNotary returns(uint256) {
+    /// @dev Return the count of the broker approval requests queued for notarization
+    function getBrokerInQueueCount() public view returns(uint256) {
         return broker_approval_queue.length();
     }
     /// @dev Return address of the broker at (notarization) queue index
-    function getBrokerQueueAt(uint256 index) public view onlyNotary returns(address) {
+    function getBrokerInQueue(uint256 index) public view returns(address) {
         require(broker_approval_queue.length() > index, "Broker queue length should be greater than index!");
         return broker_approval_queue.at(index);
     }

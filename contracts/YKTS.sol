@@ -189,6 +189,14 @@ contract YKTS is AccessControl {
         require(broker_approval_queue.length() > index, "Broker queue length should be greater than index!");
         return broker_approval_queue.at(index);
     }
+    /// @dev Get the total number of brokers.
+    function getBrokerCount() public view returns (uint256) {
+        return getRoleMemberCount(BROKER_ROLE);
+    }
+    /// @dev Get the total number of brokers.
+    function getBroker(uint256 index) public view returns (address) {
+        return getRoleMember(BROKER_ROLE, index);
+    }
     /// @dev Remove oneself from the broker role.
     function renounceBroker() public {
         renounceRole(BROKER_ROLE, msg.sender);

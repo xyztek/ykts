@@ -56,10 +56,15 @@ window.App = {
 		}
 		// add admin
 		const response = await xyz_ykts_add_admin(ykts_contract, sender_address, new_admin_address);
-		// TODO error handling
+		if (!response) {
+			document.getElementById("add_admin_status").innerHTML = "Failed";
+			document.getElementById("add_admin_sender").innerHTML = sender_address;
+			alert("Add admin request failed!");
+			return;
+		}
 		console.log("Admin Add:", response);
 		// OK
-		document.getElementById("add_admin_status").innerHTML = "OK";
+		document.getElementById("add_admin_status").innerHTML = response.status;
 		document.getElementById("add_admin_sender").innerHTML = sender_address;
 	},
 
@@ -77,10 +82,15 @@ window.App = {
 		}
 		// renounce yourself from admin priviliges
 		const response = await xyz_ykts_renounce_admin(ykts_contract, sender_address);
-		// TODO error handling
+		if (!response) {
+			document.getElementById("renounce_admin_status").innerHTML = "Failed";
+			document.getElementById("renounce_admin_sender").innerHTML = sender_address;
+			alert("Renounce admin request failed!");
+			return;
+		}
 		console.log("Admin Renounce:", response);
 		// OK
-		document.getElementById("renounce_admin_status").innerHTML = "OK";
+		document.getElementById("renounce_admin_status").innerHTML = response.status;
 		document.getElementById("renounce_admin_sender").innerHTML = sender_address;
 	},
 
@@ -106,10 +116,15 @@ window.App = {
 		}
 		// add notary
 		const response = await xyz_ykts_add_notary(ykts_contract, sender_address, new_notary_address);
-		// TODO error handling
+		if (!response) {
+			document.getElementById("add_notary_status").innerHTML = "Failed";
+			document.getElementById("add_notary_sender").innerHTML = sender_address;
+			alert("Add notary request failed!");
+			return;
+		}
 		console.log("Notary Add:", response);
 		// OK
-		document.getElementById("add_notary_status").innerHTML = "OK";
+		document.getElementById("add_notary_status").innerHTML = response.status;
 		document.getElementById("add_notary_sender").innerHTML = sender_address;
 	},
 
@@ -125,7 +140,7 @@ window.App = {
 			alert("Unable to get default address, aborting!");
 			return;
 		}
-		// get new notary address
+		// get to-be-removed notary address
 		const remove_notary_address = document.getElementById('remove_notary_address').value;
 		if (!remove_notary_address) {
 			document.getElementById("remove_notary_status").innerHTML = "Failed";
@@ -133,12 +148,17 @@ window.App = {
 			alert("Empty admin address field!");
 			return;
 		}
-		// add notary
+		// remove notary
 		const response = await xyz_ykts_remove_notary(ykts_contract, sender_address, remove_notary_address);
-		// TODO error handling
+		if (!response) {
+			document.getElementById("remove_notary_status").innerHTML = "Failed";
+			document.getElementById("remove_notary_sender").innerHTML = sender_address;
+			alert("Remove notary request failed!");
+			return;
+		}
 		console.log("Notary Remove:", response);
 		// OK
-		document.getElementById("remove_notary_status").innerHTML = "OK";
+		document.getElementById("remove_notary_status").innerHTML = response.status;
 		document.getElementById("remove_notary_sender").innerHTML = sender_address;
 	},
 };

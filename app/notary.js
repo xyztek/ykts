@@ -56,7 +56,7 @@ window.App = {
 		// request for approval
 		const response = await xyz_ykts_add_broker(ykts_contract, sender_address, new_broker_address);
 		if (!response) {
-			document.getElementById("broker_request_status").innerHTML = "Failed";
+			document.getElementById("approve_broker_status").innerHTML = "Failed";
 			document.getElementById("approve_broker_sender").innerHTML = sender_address;
 			alert("Approval request failed!");
 			return;

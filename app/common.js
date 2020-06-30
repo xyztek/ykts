@@ -1,39 +1,52 @@
 
-
+// get account (address) by index, Metamask only returns one though!
 export async function xyz_get_account_by_index(index) {
 	var account;
 	var accounts;
 	try {
 		accounts = await web3.eth.getAccounts();
 	} catch (e) {
-		console.log(e.message);
+		console.error("[xyz_get_account_by_index]" + e.message);
 		return null;
 	}
 	if (accounts.length == 0) {
+		console.error("[xyz_get_account_by_index] accounts empty");
+		return null;
+	}
+	if (index >= accounts.length || index < 0) {
+		console.error("[xyz_get_account_by_index] index invalid");
 		return null;
 	}
 	// get default account
 	account = accounts[index];
 	if (web3.utils.isAddress(account) != true) {
+		console.error("[xyz_get_account_by_index] accounts empty");
 		return null;
 	}
 	return account;
 }
 
+// get all accounts, Metamask only returns one though!
 export async function xyz_get_accounts() {
 	var accounts;
 	try {
 		accounts = await web3.eth.getAccounts();
 	} catch (e) {
-		console.log(e.message);
+		console.error("[xyz_get_accounts]" + e.message);
 		return null;
 	}
 	if (accounts.length == 0) {
+		console.error("[xyz_get_accounts] accounts empty");
 		return null;
 	}
-	console.log("Ethereum Accounts", accounts);
 	return accounts;
 }
+
+
+
+
+
+
 
 export async function xyz_get_balance(address) {
 	try {

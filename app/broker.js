@@ -89,7 +89,7 @@ window.App = {
 			alert("Approval request failed!");
 			return;
 		}
-		console.log("Broker Response: ", response)
+		console.log("Broker Response: ", response);
 
 		document.getElementById("broker_request_status").innerHTML = response.status;
 		document.getElementById("broker_address").innerHTML = sender_address;

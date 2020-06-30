@@ -75,6 +75,27 @@ window.App = {
 		document.getElementById("notary_count").innerHTML = count;
 		document.getElementById("notary_addresses").innerHTML = addrs;
 	},
+
+	list_broker_queue: async () => {
+		var self = this;
+		document.getElementById("broker_queue_status").innerHTML = "Pending";
+		document.getElementById("broker_queue_count").innerHTML = 0;
+		document.getElementById("broker_queue_addresses").innerHTML = 0;
+
+		// get broker queue count
+		const count = await ykts_contract.methods.getBrokerQueueLength().call();
+		console.log("Broker Queue Count:", count)
+
+		var addrs = [];
+		for (var i = 0; i < count; i++) {
+			addrs[i] = await ykts_contract.methods.getBrokerQueueAt(i).call();
+		}
+		console.log("Broker Queue Addresses:", addrs)
+		// OK
+		document.getElementById("broker_queue_status").innerHTML = "OK";
+		document.getElementById("broker_queue_count").innerHTML = count;
+		document.getElementById("broker_queue_addresses").innerHTML = addrs;
+	},
 };
 
 // hooking up web3 provider

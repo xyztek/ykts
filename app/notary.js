@@ -1,5 +1,5 @@
-import { xyz_create_web3_provider, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name, xyz_get_accounts } from './common.js';
-import { xyz_ykts_get_contract, xyz_ykts_add_admin, xyz_ykts_renounce_admin } from './ykts.js';
+import { xyz_create_web3_provider, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
+import { xyz_ykts_get_contract, xyz_ykts_add_broker } from './ykts.js';
 
 // YKTS contract interface
 var ykts_contract;
@@ -34,73 +34,37 @@ window.App = {
 		}
 	},
 
-	list_admins: async () => {
+	approve_broker: async () => {
 		var self = this;
-		document.getElementById("admin_status").innerHTML = "Pending";
-		document.getElementById("admin_count").innerHTML = 0;
-		document.getElementById("admin_addresses").innerHTML = 0;
-
-		// get admin count
-		const count = await ykts_contract.methods.getAdminCount().call();
-		console.log("Admin Count:", count)
-
-		var addrs = [];
-		for (var i = 0; i < count; i++) {
-			addrs[i] = await ykts_contract.methods.getAdmin(i).call();
-		}
-		console.log("Admin Addresses:", addrs)
-		// OK
-		document.getElementById("admin_status").innerHTML = "OK";
-		document.getElementById("admin_count").innerHTML = count;
-		document.getElementById("admin_addresses").innerHTML = addrs;
-	},
-
-	add_admin: async () => {
-		var self = this;
-		document.getElementById("add_admin_status").innerHTML = "Pending";
-		document.getElementById("add_admin_sender").innerHTML = 0;
+		document.getElementById("approve_broker_status").innerHTML = "Pending";
+		document.getElementById("approve_broker_sender").innerHTML = 0;
 
 		// get tx sender address (current admin!)
 		const sender_address = await xyz_get_account_by_index(0);
 		if (sender_address == null) {
-			document.getElementById("add_admin_status").innerHTML = "Failed";
+			document.getElementById("approve_broker_status").innerHTML = "Failed";
 			alert("Unable to get default address, aborting!");
 			return;
 		}
-		// get new admin address
-		const new_admin_address = document.getElementById('new_admin_address').value;
-		if (!new_admin_address) {
-			document.getElementById("add_admin_status").innerHTML = "Failed";
-			document.getElementById("add_admin_sender").innerHTML = sender_address;
-			alert("Empty admin address field!");
+		const new_broker_address = document.getElementById('new_broker_address').value;
+		if (!new_broker_address) {
+			document.getElementById("approve_broker_status").innerHTML = "Failed";
+			document.getElementById("approve_broker_sender").innerHTML = sender_address;
+			alert("Empty Broker Address!");
 			return;
 		}
-		// add admin
-		const response = await xyz_ykts_add_admin(ykts_contract, sender_address, new_admin_address);
-		console.log("Admin Add:", response);
-		// OK
-		document.getElementById("add_admin_status").innerHTML = "OK";
-		document.getElementById("add_admin_sender").innerHTML = sender_address;
-	},
-
-	renounce_admin: async () => {
-		var self = this;
-		document.getElementById("renounce_admin_status").innerHTML = "Pending";
-		document.getElementById("renounce_admin_sender").innerHTML = 0;
-
-		// get tx sender address (current admin!)
-		const sender_address = await xyz_get_account_by_index(0);
-		if (sender_address == null) {
-			document.getElementById("renounce_admin_status").innerHTML = "Failed";
-			alert("Unable to get default address, aborting!");
+		// request for approval
+		const response = await xyz_ykts_add_broker(ykts_contract, sender_address, new_broker_address);
+		if (!response) {
+			document.getElementById("broker_request_status").innerHTML = "Failed";
+			document.getElementById("approve_broker_sender").innerHTML = sender_address;
+			alert("Approval request failed!");
 			return;
 		}
-		// add admin
-		const response = await xyz_ykts_renounce_admin(ykts_contract, sender_address);
-		console.log("Admin Renounce:", response);
+		console.log("Notary Response: ", response);
 		// OK
-		document.getElementById("renounce_admin_status").innerHTML = "OK";
-		document.getElementById("renounce_admin_sender").innerHTML = sender_address;
+		document.getElementById("approve_broker_status").innerHTML = response.status;
+		document.getElementById("approve_broker_sender").innerHTML = sender_address;
 	},
 };
 

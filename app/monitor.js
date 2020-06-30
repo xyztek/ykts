@@ -55,6 +55,26 @@ window.App = {
 		document.getElementById("admin_addresses").innerHTML = addrs;
 	},
 
+	list_notaries: async () => {
+		var self = this;
+		document.getElementById("notary_status").innerHTML = "Pending";
+		document.getElementById("notary_count").innerHTML = 0;
+		document.getElementById("notary_addresses").innerHTML = 0;
+
+		// get notary count
+		const count = await ykts_contract.methods.getNotaryCount().call();
+		console.log("Notary Count:", count)
+
+		var addrs = [];
+		for (var i = 0; i < count; i++) {
+			addrs[i] = await ykts_contract.methods.getNotary(i).call();
+		}
+		console.log("Notary Addresses:", addrs)
+		// OK
+		document.getElementById("notary_status").innerHTML = "OK";
+		document.getElementById("notary_count").innerHTML = count;
+		document.getElementById("notary_addresses").innerHTML = addrs;
+	},
 };
 
 // hooking up web3 provider

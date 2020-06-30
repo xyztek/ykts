@@ -52,12 +52,14 @@ window.App = {
 		const id = document.getElementById('broker_appid').value;
 		if (!id) {
 			document.getElementById("broker_request_status").innerHTML = "Failed";
+			document.getElementById("broker_address").innerHTML = sender_address;
 			alert("Empty Id!");
 			return;
 		}
 		const message = document.getElementById('broker_message').value;
 		if (!message) {
 			document.getElementById("broker_request_status").innerHTML = "Failed";
+			document.getElementById("broker_address").innerHTML = sender_address;
 			alert("Empty message!");
 			return;
 		}
@@ -74,11 +76,19 @@ window.App = {
 		console.log("Broker Recover: ", recover);
 
 		if (sender_address != recover) {
+			document.getElementById("broker_request_status").innerHTML = "Failed";
+			document.getElementById("broker_address").innerHTML = sender_address;
 			alert("Address/Recover mismatch!");
 			return;
 		}
 		// request for approval
 		const response = await xyz_ykts_broker_request(ykts_contract, sender_address, id, hash, signature);
+		if (!response) {
+			document.getElementById("broker_request_status").innerHTML = "Failed";
+			document.getElementById("broker_address").innerHTML = sender_address;
+			alert("Approval request failed!");
+			return;
+		}
 		console.log("Broker Response: ", response)
 
 		document.getElementById("broker_request_status").innerHTML = response.status;

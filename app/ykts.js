@@ -13,12 +13,12 @@ export async function xyz_ykts_get_contract() {
 			contract_json = data;
 		},
 		error: function (error) {
-			console.error("YKTS: JSON request");
+			console.error("[xyz_ykts_get_contract] JSON request");
 			return null;
 		}
 	});
 	if (contract_json == null) {
-		console.error("YKTS: empty contract");
+		console.error("[xyz_ykts_get_contract] contract empty");
 		return null;
 	}
 	// get smart contract address and ABI
@@ -30,13 +30,13 @@ export async function xyz_ykts_get_contract() {
 		network_id = await web3.eth.net.getId();
 		// get smart contract address & abi
 		if (contract_json.networks[network_id.toString()] == null) {
-			console.error("YKTS: invalid network");
+			console.error("[xyz_ykts_get_contract] network invalid");
 			return null;
 		}
 		contract_address = contract_json.networks[network_id.toString()].address;
 		contract_abi = contract_json.abi;
 	} catch (e) {
-		console.error("YKTS:" + e.message);
+		console.error("[xyz_ykts_get_contract]" + e.message);
 		return null;
 	}
 	// log
@@ -46,6 +46,41 @@ export async function xyz_ykts_get_contract() {
 	const contract = new web3.eth.Contract(contract_abi, contract_address);
 	return contract;
 }
+
+// add admin (only allowed to admins)
+export async function xyz_ykts_add_admin(contract, current_admin, new_admin) {
+	var response = null;
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_add_admin] contract invalid");
+			return null;
+		}
+		response = await contract.methods.addAdmin(new_admin).send({from: current_admin});
+	} catch (e) {
+		console.error("[xyz_ykts_add_admin]" + e.message);
+		return null;
+	}
+	return response;
+}
+
+// renounce admin priviliges
+export async function xyz_ykts_renounce_admin(contract, current_admin) {
+	var response = null;
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_renounce_admin] contract invalid");
+			return null;
+		}
+		response = await contract.methods.renounceAdmin().send({from: current_admin});
+	} catch (e) {
+		console.error("[xyz_ykts_renounce_admin]" + e.message);
+		return null;
+	}
+	return response;
+}
+
+
+
 
 export async function xyz_ykts_add_notary(contract, address) {
 	// request for approval

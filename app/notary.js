@@ -1,6 +1,7 @@
-import { xyz_get_contract, xyz_ykts_add_notary, xyz_ykts_broker_request, xyz_ykts_recover, xyz_ykts_is_signer, xyz_ykts_sign, xyz_create_web3_provider, xyz_get_balance, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
+import { xyz_create_web3_provider, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name, xyz_get_accounts } from './common.js';
+import { xyz_ykts_get_contract, xyz_ykts_add_admin, xyz_ykts_renounce_admin } from './ykts.js';
 
-// default account
+// YKTS contract interface
 var ykts_contract;
 
 window.App = {
@@ -9,63 +10,99 @@ window.App = {
 
 		// get provider name
 		const provider = await xyz_get_provider_name();
-		if (provider === null) {
+		if (provider == null) {
 				alert("Couldn't get any Web3 providers, probably Metamask/Mist/Infura is not present!");
 				return;
 		}
-		// check Metamask availability and report
-		if (web3.currentProvider.isMetaMask) {
-			document.getElementById("providernote").innerHTML = "Metamask is available, please set network to Rinkeby!"
-		} else {
-			document.getElementById("providernote").innerHTML = "Metamask is NOT available, please use a local node or set 'infuraAPIKey' and connect to Rinkeby network! Some functionality will not work without Metamask";
-		}
-		// get network name
-		const network = await xyz_get_network_name();
-		if (network === null) {
-			alert("Couldn't get any the Ethereum network, probably Metamask/Mist/Infura is not present!");
+		const network_name = await xyz_get_network_name();
+		if (network_name == null) {
+			alert("Couldn't get Ethereum network name, aborting!");
 			return;
 		}
-
-		// parse contract and get abi & address
-		var contractvars = await xyz_get_contract("YKTS.json");
-		const contract_address = contractvars[0];
-		const contract_abi = contractvars[1];
-		// create smart contract
-		ykts_contract = new web3.eth.Contract(contract_abi, contract_address);
-
-	},
-
-	list_brokers: async () => {
-		var self = this;
-		document.getElementById("brokerrequeststatus").innerHTML = "Pending";
-		document.getElementById("brokerqueuelength").innerHTML = 0;
-		document.getElementById("brokeraddresses").innerHTML = 0;
-
-		// sign hash of message with default account
-		const address = await xyz_get_account_by_index(0);
-
-		const h = await xyz_ykts_add_notary(ykts_contract, address);
-		console.log("hey: ", h);
-
-
-		// broker queue length
-		const length = await ykts_contract.methods.getBrokerQueueLength().call();
-		console.log("Broker Length: ", length)
-
-		var addresses;
-		for (var i = 0; i < length; i++) {
-			addresses[i] = await ykts_contract.methods.getBrokerQueueAt(i).call();
+		// check Metamask availability and report
+		if (web3.currentProvider.isMetaMask) {
+			document.getElementById("note").innerHTML = "Metamask is available and Ethereum network is set to '" + network_name + "'";
+		} else {
+			document.getElementById("note").innerHTML = "Metamask is NOT available, aborting!";
+			return;
 		}
-		console.log("Broker Addresses: ", addresses)
-
-		document.getElementById("brokerrequeststatus").innerHTML = response.status;
-		document.getElementById("brokerqueuelength").innerHTML = length;
-		document.getElementById("brokeraddresses").innerHTML = addresses;
-
+		// parse contract and get abi & address
+		ykts_contract = await xyz_ykts_get_contract();
+		if (ykts_contract == null) {
+			alert("Unable to get ./build/YKTS.json smart contract on '" + network_name + "' network, aborting!");
+			return;
+		}
 	},
 
-};
+	list_admins: async () => {
+		var self = this;
+		document.getElementById("admin_status").innerHTML = "Pending";
+		document.getElementById("admin_count").innerHTML = 0;
+		document.getElementById("admin_addresses").innerHTML = 0;
 
+		// get admin count
+		const count = await ykts_contract.methods.getAdminCount().call();
+		console.log("Admin Count:", count)
+
+		var addrs = [];
+		for (var i = 0; i < count; i++) {
+			addrs[i] = await ykts_contract.methods.getAdmin(i).call();
+		}
+		console.log("Admin Addresses:", addrs)
+		// OK
+		document.getElementById("admin_status").innerHTML = "OK";
+		document.getElementById("admin_count").innerHTML = count;
+		document.getElementById("admin_addresses").innerHTML = addrs;
+	},
+
+	add_admin: async () => {
+		var self = this;
+		document.getElementById("add_admin_status").innerHTML = "Pending";
+		document.getElementById("add_admin_sender").innerHTML = 0;
+
+		// get tx sender address (current admin!)
+		const sender_address = await xyz_get_account_by_index(0);
+		if (sender_address == null) {
+			document.getElementById("add_admin_status").innerHTML = "Failed";
+			alert("Unable to get default address, aborting!");
+			return;
+		}
+		// get new admin address
+		const new_admin_address = document.getElementById('new_admin_address').value;
+		if (!new_admin_address) {
+			document.getElementById("add_admin_status").innerHTML = "Failed";
+			document.getElementById("add_admin_sender").innerHTML = sender_address;
+			alert("Empty admin address field!");
+			return;
+		}
+		// add admin
+		const response = await xyz_ykts_add_admin(ykts_contract, sender_address, new_admin_address);
+		console.log("Admin Add:", response);
+		// OK
+		document.getElementById("add_admin_status").innerHTML = "OK";
+		document.getElementById("add_admin_sender").innerHTML = sender_address;
+	},
+
+	renounce_admin: async () => {
+		var self = this;
+		document.getElementById("renounce_admin_status").innerHTML = "Pending";
+		document.getElementById("renounce_admin_sender").innerHTML = 0;
+
+		// get tx sender address (current admin!)
+		const sender_address = await xyz_get_account_by_index(0);
+		if (sender_address == null) {
+			document.getElementById("renounce_admin_status").innerHTML = "Failed";
+			alert("Unable to get default address, aborting!");
+			return;
+		}
+		// add admin
+		const response = await xyz_ykts_renounce_admin(ykts_contract, sender_address);
+		console.log("Admin Renounce:", response);
+		// OK
+		document.getElementById("renounce_admin_status").innerHTML = "OK";
+		document.getElementById("renounce_admin_sender").innerHTML = sender_address;
+	},
+};
 
 // hooking up web3 provider
 window.addEventListener('load', async () => {

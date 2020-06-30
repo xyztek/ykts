@@ -1,23 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Notary Tests</title>
+  <title>Admin Tests</title>
   <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="./notary.js" type="module"></script>
+  <script src="./admin.js" type="module"></script>
 </head>
 <body>
-  <h1>Notary Tests</h1>
+  <h1>Admin Tests</h1>
   <p>
-    <span style="color:red;font-weight:bold" id="providernote"></span>
+    <span style="color:red;font-weight:bold" id="note"></span>
   </p>
 
-  <h2>Broker Request Queue</h2>
-  <button id="send" onclick="App.list_brokers()">Request</button>
+  <h2>List Admins</h2>
+  <button id="send" onclick="App.list_admins()">List Admins</button>
   <p>
-    <div><b>Status: <span style="color:blue;font-weight:bold" id="brokerrequeststatus"></span></div>
-    <div><b>Broker Length: <span style="color:blue;font-weight:bold" id="brokerqueuelength"></span></div>
-    <div><b>Broker Addresses: <span style="color:blue;font-weight:bold" id="brokeraddresses"></span></div>
+    <div><b>Status: <span style="color:blue;font-weight:bold" id="admin_status"></span></div>
+    <div><b>Admin Count: <span style="color:blue;font-weight:bold" id="admin_count"></span></div>
+    <div><b>Admin Addrs: <span style="color:blue;font-weight:bold" id="admin_addresses"></span></div>
+  </p>
+
+  <h2>Add Admin</h2>
+  <input type="text" size="50" id="new_admin_address" placeholder="enter address for new admin"></input>
+  <br />
+  <button id="send" onclick="App.add_admin()">Add Admin</button>
+  <p>
+    <div><b>Status: <span style="color:blue;font-weight:bold" id="add_admin_status"></span></div>
+    <div><b>Sender Address: <span style="color:blue;font-weight:bold" id="add_admin_sender"></span></div>
+  </p>
+
+  <h2>Renounce Admin</h2>
+  <button id="send" onclick="App.renounce_admin()">Renounce Admin (Yourself)</button>
+  <p>
+    <div><b>Status: <span style="color:blue;font-weight:bold" id="renounce_admin_status"></span></div>
+    <div><b>Sender Address: <span style="color:blue;font-weight:bold" id="renounce_admin_sender"></span></div>
   </p>
 
 </body>

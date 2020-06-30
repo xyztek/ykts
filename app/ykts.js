@@ -182,7 +182,24 @@ export async function xyz_ykts_broker_request(contract, address, id, msg_hash, s
 	return response;
 }
 
-
+// approve broker request (only allowed to notaries)
+export async function xyz_ykts_add_broker(contract, current_notary, broker) {
+	var response = null;
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_add_broker] contract invalid");
+			return null;
+		}
+		await contract.methods.addBroker(broker).send({from: current_notary})
+		.then(function(receipt){
+			response = receipt;
+		});
+	} catch (e) {
+		console.error("[xyz_ykts_add_broker] " + e.message);
+		return null;
+	}
+	return response;
+}
 
 
 

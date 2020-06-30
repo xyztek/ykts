@@ -7,12 +7,12 @@
   <script src="./admin.js" type="module"></script>
 </head>
 <body>
-  <h1>Admin Tests</h1>
+  <h2>Admin Tests</h2>
   <p>
     <span style="color:red;font-weight:bold" id="note"></span>
   </p>
 
-  <h2>Add Admin</h2>
+  <h3>Add Admin</h3>
   <input type="text" size="50" id="new_admin_address" placeholder="enter address for new admin"></input>
   <br />
   <button id="send" onclick="App.add_admin()">Add Admin</button>
@@ -21,14 +21,14 @@
     <div><b>Sender Address: <span style="color:blue;font-weight:bold" id="add_admin_sender"></span></div>
   </p>
 
-  <h2>Renounce Admin</h2>
+  <h3>Renounce Admin</h3>
   <button id="send" onclick="App.renounce_admin()">Renounce Admin (Yourself)</button>
   <p>
     <div><b>Status: <span style="color:blue;font-weight:bold" id="renounce_admin_status"></span></div>
     <div><b>Sender Address: <span style="color:blue;font-weight:bold" id="renounce_admin_sender"></span></div>
   </p>
 
-  <h2>Add Notary</h2>
+  <h3>Add Notary</h3>
   <input type="text" size="50" id="new_notary_address" placeholder="enter address for new notary"></input>
   <br />
   <button id="send" onclick="App.add_notary()">Add Notary</button>
@@ -37,7 +37,7 @@
     <div><b>Sender Address: <span style="color:blue;font-weight:bold" id="add_notary_sender"></span></div>
   </p>
 
-  <h2>Remove Notary</h2>
+  <h3>Remove Notary</h3>
   <input type="text" size="50" id="remove_notary_address" placeholder="enter notary address to remove"></input>
   <br />
   <button id="send" onclick="App.remove_notary()">Remove Notary</button>

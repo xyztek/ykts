@@ -55,7 +55,10 @@ export async function xyz_ykts_add_admin(contract, current_admin, new_admin) {
 			console.error("[xyz_ykts_add_admin] contract invalid");
 			return null;
 		}
-		response = await contract.methods.addAdmin(new_admin).send({from: current_admin});
+		await contract.methods.addAdmin(new_admin).send({from: current_admin})
+		.then(function(receipt){
+			response = receipt;
+		});
 	} catch (e) {
 		console.error("[xyz_ykts_add_admin] " + e.message);
 		return null;
@@ -71,7 +74,10 @@ export async function xyz_ykts_renounce_admin(contract, current_admin) {
 			console.error("[xyz_ykts_renounce_admin] contract invalid");
 			return null;
 		}
-		response = await contract.methods.renounceAdmin().send({from: current_admin});
+		await contract.methods.renounceAdmin().send({from: current_admin})
+		.then(function(receipt){
+			response = receipt;
+		});
 	} catch (e) {
 		console.error("[xyz_ykts_renounce_admin] " + e.message);
 		return null;
@@ -87,7 +93,10 @@ export async function xyz_ykts_add_notary(contract, current_admin, new_notary) {
 			console.error("[xyz_ykts_add_notary] contract invalid");
 			return null;
 		}
-		response = await contract.methods.addNotary(new_notary).send({from: current_admin});
+		await contract.methods.addNotary(new_notary).send({from: current_admin})
+		.then(function(receipt){
+			response = receipt;
+		});
 	} catch (e) {
 		console.error("[xyz_ykts_add_notary] " + e.message);
 		return null;
@@ -103,7 +112,10 @@ export async function xyz_ykts_remove_notary(contract, current_admin, removed_no
 			console.error("[xyz_ykts_remove_notary] contract invalid");
 			return null;
 		}
-		response = await contract.methods.removeNotary(removed_notary).send({from: current_admin});
+		await contract.methods.removeNotary(removed_notary).send({from: current_admin})
+		.then(function(receipt){
+			response = receipt;
+		});
 	} catch (e) {
 		console.error("[xyz_ykts_remove_notary] " + e.message);
 		return null;
@@ -159,8 +171,10 @@ export async function xyz_ykts_broker_request(contract, address, id, msg_hash, s
 			console.error("[xyz_ykts_broker_request] contract invalid");
 			return null;
 		}
-		// request for approval
-		response = await contract.methods.requestBrokerApproval(id, msg_hash, signature).send({from: address});
+		await contract.methods.requestBrokerApproval(id, msg_hash, signature).send({from: address})
+		.then(function(receipt){
+			response = receipt;
+		});
 	} catch (e) {
 		console.error("[xyz_ykts_broker_request] " + e.message);
 		return null;

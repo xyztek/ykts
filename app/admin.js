@@ -49,7 +49,7 @@ window.App = {
 			addrs[i] = await ykts_contract.methods.getAdmin(i).call();
 		}
 		console.log("Admin Addresses:", addrs)
-
+		// OK
 		document.getElementById("admin_status").innerHTML = "OK";
 		document.getElementById("admin_count").innerHTML = count;
 		document.getElementById("admin_addresses").innerHTML = addrs;
@@ -58,14 +58,7 @@ window.App = {
 	add_admin: async () => {
 		var self = this;
 		document.getElementById("add_admin_status").innerHTML = "Pending";
-		// get new admin address
-		const new_admin_address = document.getElementById('new_admin_address')
-		if (!new_admin_address) {
-			document.getElementById("add_admin_status").innerHTML = "Failed";
-			alert("Empty admin address!");
-			return;
-		}
-		const address = new_admin_address.value;
+		document.getElementById("add_admin_sender").innerHTML = 0;
 
 		// get tx sender address (current admin!)
 		const sender_address = await xyz_get_account_by_index(0);
@@ -74,16 +67,27 @@ window.App = {
 			alert("Unable to get default address, aborting!");
 			return;
 		}
+		// get new admin address
+		const new_admin_address = document.getElementById('new_admin_address').value;
+		if (!new_admin_address) {
+			document.getElementById("add_admin_status").innerHTML = "Failed";
+			document.getElementById("add_admin_sender").innerHTML = sender_address;
+			alert("Empty admin address field!");
+			return;
+		}
 		// add admin
-		const response = await xyz_ykts_add_admin(ykts_contract, sender_address, address);
+		const response = await xyz_ykts_add_admin(ykts_contract, sender_address, new_admin_address);
 		console.log("Admin Add:", response);
 		// OK
 		document.getElementById("add_admin_status").innerHTML = "OK";
+		document.getElementById("add_admin_sender").innerHTML = sender_address;
 	},
 
 	renounce_admin: async () => {
 		var self = this;
 		document.getElementById("renounce_admin_status").innerHTML = "Pending";
+		document.getElementById("renounce_admin_sender").innerHTML = 0;
+
 		// get tx sender address (current admin!)
 		const sender_address = await xyz_get_account_by_index(0);
 		if (sender_address == null) {
@@ -92,10 +96,11 @@ window.App = {
 			return;
 		}
 		// add admin
-		const response = await xyz_ykts_add_admin(ykts_contract, sender_address, address);
+		const response = await xyz_ykts_renounce_admin(ykts_contract, sender_address);
 		console.log("Admin Renounce:", response);
 		// OK
 		document.getElementById("renounce_admin_status").innerHTML = "OK";
+		document.getElementById("renounce_admin_sender").innerHTML = sender_address;
 	},
 };
 

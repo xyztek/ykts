@@ -1,5 +1,5 @@
 import { xyz_create_web3_provider, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
-import { xyz_ykts_get_contract, xyz_ykts_add_admin, xyz_ykts_renounce_admin } from './ykts.js';
+import { xyz_ykts_get_contract, xyz_ykts_add_admin, xyz_ykts_renounce_admin, xyz_ykts_add_notary, xyz_ykts_remove_notary } from './ykts.js';
 
 // YKTS contract interface
 var ykts_contract;

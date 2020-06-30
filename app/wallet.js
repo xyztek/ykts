@@ -1,7 +1,4 @@
-import { xyz_create_web3_provider, xyz_get_balance, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
-
-// default account
-var account;
+import { xyz_create_web3_provider, xyz_get_account_by_index, xyz_get_balance, xyz_get_network_name, xyz_get_provider_name } from './common.js';
 
 window.App = {
 	start: async () => {
@@ -9,41 +6,41 @@ window.App = {
 
 		// get provider name
 		const provider = await xyz_get_provider_name();
-		if (provider === null) {
+		if (provider == null) {
 				alert("Couldn't get any Web3 providers, probably Metamask/Mist/Infura is not present!");
 				return;
 		}
+		const network_name = await xyz_get_network_name();
+		if (network_name == null) {
+			alert("Couldn't get Ethereum network name, aborting!");
+			return;
+		}
 		// check Metamask availability and report
 		if (web3.currentProvider.isMetaMask) {
-			document.getElementById("providernote").innerHTML = "Metamask is available, please set network to Rinkeby!"
+			document.getElementById("note").innerHTML = "Metamask is available and Ethereum network is set to '" + network_name + "'";
 		} else {
-			document.getElementById("providernote").innerHTML = "Metamask is NOT available, please use a local node or set 'infuraAPIKey' and connect to Rinkeby network! Some functionality will not work without Metamask";
-		}
-		// get network name
-		const network = await xyz_get_network_name();
-		if (network === null) {
-			alert("Couldn't get any the Ethereum network, probably Metamask/Mist/Infura is not present!");
+			document.getElementById("note").innerHTML = "Metamask is NOT available, aborting!";
 			return;
 		}
-		// get default account
-		account = await xyz_get_account_by_index(0);
-		if (account === null) {
-			alert("Couldn't get the default Ethereum accounts, probably Metamask/Mist/Infura is not present!");
+		// get tx sender address (current admin!)
+		const address = await xyz_get_account_by_index(0);
+		if (address == null) {
+			alert("Unable to get default address, aborting!");
 			return;
 		}
-		document.getElementById("defaultaddress").innerHTML = account;
-
 		// get balance
-		const balance = await xyz_get_balance(account);
-		if (balance === null) {
-			document.getElementById("etherbalanceauto").innerHTML = "invalid";
-		} else {
-			document.getElementById("etherbalanceauto").innerHTML = web3.utils.fromWei(balance, 'ether');
+		const balance = await xyz_get_balance(address);
+		if (balance == null) {
+			alert("Unable to get address balance, aborting!");
+			return;
 		}
+		// print
+		document.getElementById("address").innerHTML = address;		
+		document.getElementById("balance").innerHTML = web3.utils.fromWei(balance, 'ether');
 	},
 
   // send ether
-  sendEther: function() {
+  send_ether: function() {
     var self = this;
     let amount = parseFloat(document.getElementById("ethamount").value);
     if (isNaN(amount)) {

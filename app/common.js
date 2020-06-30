@@ -42,23 +42,17 @@ export async function xyz_get_accounts() {
 	return accounts;
 }
 
-
-
-
-
-
-
+// get account balance
 export async function xyz_get_balance(address) {
 	try {
 		if (web3.utils.isAddress(address) != true) {
-			console.log("invalid Ethereum address");
+			console.error("[xyz_get_balance] address invalid");
 			return null;
 		}
 		const balance = await web3.eth.getBalance(address);
-		console.log("Ethereum Balance", balance);
 		return balance;
 	} catch (e) {
-		console.log(e.message);
+		console.error("[xyz_get_balance]" + e.message);
 		return null;
 	}
 }
@@ -67,10 +61,9 @@ export async function xyz_get_balance(address) {
 export async function xyz_get_network_name() {
 	try {
 		const network = await web3.eth.net.getNetworkType();
-		console.log("Ethereum Network:", network);
 		return network;
 	} catch (e) {
-		console.log(e.message);
+		console.error("[xyz_get_network_name]" + e.message);
 		return null;
 	}
 }
@@ -79,10 +72,9 @@ export async function xyz_get_network_name() {
 export async function xyz_get_network_id() {
 	try {
 		const id = await web3.eth.net.getId()
-		console.log("Ethereum Network Id:", id);
 		return id;
 	} catch (e) {
-		console.log(e.message);
+		console.error("[xyz_get_network_id]" + e.message);
 		return null;
 	}
 }
@@ -108,7 +100,8 @@ export async function xyz_get_provider_name() {
 	return null;
 }
 
-const infura_project_id = "17816af5e26d434aa2f6d52915764ed7";
+// Infura Project Id
+const infura_project_id = "";
 
 export async function xyz_create_web3_provider() {
 	// Modern dapp browsers...

@@ -36,5 +36,23 @@
     <div><b>Sender Address: <span style="color:blue;font-weight:bold" id="renounce_admin_sender"></span></div>
   </p>
 
+  <h2>Add Notary</h2>
+  <input type="text" size="50" id="new_notary_address" placeholder="enter address for new notary"></input>
+  <br />
+  <button id="send" onclick="App.add_notary()">Add Notary</button>
+  <p>
+    <div><b>Status: <span style="color:blue;font-weight:bold" id="add_notary_status"></span></div>
+    <div><b>Sender Address: <span style="color:blue;font-weight:bold" id="add_notary_sender"></span></div>
+  </p>
+
+  <h2>Remove Notary</h2>
+  <input type="text" size="50" id="remove_notary_address" placeholder="enter notary address to remove"></input>
+  <br />
+  <button id="send" onclick="App.remove_notary()">Remove Notary</button>
+  <p>
+    <div><b>Status: <span style="color:blue;font-weight:bold" id="remove_notary_status"></span></div>
+    <div><b>Sender Address: <span style="color:blue;font-weight:bold" id="remove_notary_sender"></span></div>
+  </p>
+
 </body>
 </html>

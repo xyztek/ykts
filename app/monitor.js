@@ -1,5 +1,5 @@
-import { xyz_create_web3_provider, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
-import { xyz_ykts_get_contract, xyz_ykts_broker_queue, xyz_ykts_entity_queue } from './ykts.js';
+import { xyz_create_web3_provider, xyz_get_network_name, xyz_get_provider_name } from './common.js';
+import { xyz_ykts_get_contract, xyz_ykts_get_brokers, xyz_ykts_get_broker_queue, xyz_ykts_get_entities, xyz_ykts_get_entity_queue } from './ykts.js';
 
 // YKTS contract interface
 var ykts_contract;
@@ -82,19 +82,18 @@ window.App = {
 		document.getElementById("entity_count").innerHTML = 0;
 		document.getElementById("entity_addresses").innerHTML = 0;
 
-		// get notary count
-		const count = await ykts_contract.methods.getEntityCount().call();
-		console.log("Entity Count:", count)
-
-		var addrs = [];
-		for (var i = 0; i < count; i++) {
-			addrs[i] = await ykts_contract.methods.getEntity(i).call();
+		// get entities
+		const entities = await xyz_ykts_get_entities(ykts_contract);
+		if (entities == null) {
+			alert("Entity is null");
+			return;
 		}
-		console.log("Entity Addresses:", addrs)
+		console.log("Entity Count:", entities.length);
+		console.log("Entity Addresses:", entities);
 		// OK
 		document.getElementById("entity_status").innerHTML = "OK";
-		document.getElementById("entity_count").innerHTML = count;
-		document.getElementById("entity_addresses").innerHTML = addrs;
+		document.getElementById("entity_count").innerHTML = entities.length;
+		document.getElementById("entity_addresses").innerHTML = entities;
 	},
 
 	list_brokers: async () => {
@@ -103,19 +102,18 @@ window.App = {
 		document.getElementById("broker_count").innerHTML = 0;
 		document.getElementById("broker_addresses").innerHTML = 0;
 
-		// get notary count
-		const count = await ykts_contract.methods.getBrokerCount().call();
-		console.log("Broker Count:", count)
-
-		var addrs = [];
-		for (var i = 0; i < count; i++) {
-			addrs[i] = await ykts_contract.methods.getBroker(i).call();
+		// get brokers
+		const brokers = await xyz_ykts_get_brokers(ykts_contract);
+		if (brokers == null) {
+			alert("Broker is null");
+			return;
 		}
-		console.log("Broker Addresses:", addrs)
+		console.log("Brokers Count:", brokers.length);
+		console.log("Brokers Addresses:", brokers);
 		// OK
 		document.getElementById("broker_status").innerHTML = "OK";
-		document.getElementById("broker_count").innerHTML = count;
-		document.getElementById("broker_addresses").innerHTML = addrs;
+		document.getElementById("broker_count").innerHTML = brokers.length;
+		document.getElementById("broker_addresses").innerHTML = brokers;
 	},
 
 	list_entity_queue: async () => {
@@ -124,8 +122,8 @@ window.App = {
 		document.getElementById("entity_queue_count").innerHTML = 0;
 		document.getElementById("entity_queue_addresses").innerHTML = 0;
 
-		// get brokers in queue
-		const entities_in_queue = await xyz_ykts_entity_queue(ykts_contract);
+		// get entities in queue
+		const entities_in_queue = await xyz_ykts_get_entity_queue(ykts_contract);
 		if (entities_in_queue == null) {
 			alert("Entities in queue is null");
 			return;
@@ -145,7 +143,7 @@ window.App = {
 		document.getElementById("broker_queue_addresses").innerHTML = 0;
 
 		// get brokers in queue
-		const brokers_in_queue = await xyz_ykts_broker_queue(ykts_contract);
+		const brokers_in_queue = await xyz_ykts_get_broker_queue(ykts_contract);
 		if (brokers_in_queue == null) {
 			alert("Brokers in queue is null");
 			return;

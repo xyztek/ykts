@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Broker Tests</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="./broker.js" type="module"></script>
+</head>
+<body>
+  <h2>Broker Tests</h2>
+  <p>
+    <span style="color:red;font-weight:bold" id="note"></span>
+  </p>
+
+  <h3>Broker Request Approval from Digital Notary</h3>
+  <input type="text" size="50" id="broker_appid" placeholder="enter application id from notary"></input>
+  <br />
+  <input type="text" size="50" id="broker_message" placeholder="enter message to sign"></input>
+  <br />
+  <button id="send" onclick="App.broker_request()">Request</button>
+  <p>
+    <div><b>Status: <span style="color:blue;font-weight:bold" id="broker_request_status"></span></div>
+    <div><b>Broker Address: <span style="color:blue;font-weight:bold" id="broker_address"></span></div>
+    <div><b>Broker AppID: <span style="color:blue;font-weight:bold" id="broker_id"></span></div>
+    <div><b>Broker PoC Hash: </b><span style="color:blue;font-weight:bold" id="broker_hash"></span></div>
+    <div><b>Broker Signature: </b><span style="color:blue;font-weight:bold" id="broker_signature"></span></div>
+  </p>
+
+</body>
+</html>

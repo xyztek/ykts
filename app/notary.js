@@ -1,5 +1,5 @@
 import { xyz_create_web3_provider, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
-import { xyz_ykts_get_contract, xyz_ykts_add_broker, xyz_ykts_broker_queue_by_address, xyz_ykts_entity_queue_by_address } from './ykts.js';
+import { xyz_ykts_get_contract, xyz_ykts_add_broker, xyz_ykts_broker_queue_by_address, xyz_ykts_add_entity, xyz_ykts_entity_queue_by_address } from './ykts.js';
 
 // YKTS contract interface
 var ykts_contract;
@@ -129,6 +129,38 @@ window.App = {
 		document.getElementById("info_entity_hash").innerHTML = hash;
 	},
 
+	approve_entity: async () => {
+		var self = this;
+		document.getElementById("approve_entity_status").innerHTML = "Pending";
+		document.getElementById("approve_entity_sender").innerHTML = 0;
+
+		// get tx sender address (current admin!)
+		const sender_address = await xyz_get_account_by_index(0);
+		if (sender_address == null) {
+			document.getElementById("approve_entity_status").innerHTML = "Failed";
+			alert("Unable to get default address, aborting!");
+			return;
+		}
+		const new_entity_address = document.getElementById('new_entity_address').value;
+		if (!new_entity_address) {
+			document.getElementById("approve_entity_status").innerHTML = "Failed";
+			document.getElementById("approve_entity_sender").innerHTML = sender_address;
+			alert("Empty Entity Address!");
+			return;
+		}
+		// request for approval
+		const response = await xyz_ykts_add_entity(ykts_contract, sender_address, new_entity_address);
+		if (!response) {
+			document.getElementById("approve_entity_status").innerHTML = "Failed";
+			document.getElementById("approve_entity_sender").innerHTML = sender_address;
+			alert("Approval request failed!");
+			return;
+		}
+		console.log("Notary Response: ", response);
+		// OK
+		document.getElementById("approve_entity_status").innerHTML = response.status;
+		document.getElementById("approve_entity_sender").innerHTML = sender_address;
+	},
 };
 
 // hooking up web3 provider

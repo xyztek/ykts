@@ -213,8 +213,9 @@ export async function xyz_ykts_broker_queue(contract) {
 		// get entity queue count
 		count = await contract.methods.getBrokerInQueueCount().call();
 		for (var i = 0; i < count; i++) {
-			// assign to broker array
-			brokers[i] = await contract.methods.getBrokerInQueue(i).call();
+			// assign to broker array [address, id, hash]
+			const values = await contract.methods.getBrokerInQueue(i).call();
+			brokers[i] = values[0];
 		}
 	} catch (e) {
 		console.error("[xyz_ykts_broker_queue] " + e.message);
@@ -235,8 +236,9 @@ export async function xyz_ykts_entity_queue(contract) {
 		// get entity queue count
 		count = await contract.methods.getEntityInQueueCount().call();
 		for (var i = 0; i < count; i++) {
-			// assign to entity array
-			entities[i] = await contract.methods.getEntityInQueue(i).call();
+			// assign to entity array [address, id, hash]
+			const values = await contract.methods.getEntityInQueue(i).call();
+			entities[i] = values[0];
 		}
 	} catch (e) {
 		console.error("[xyz_ykts_entity_queue] " + e.message);

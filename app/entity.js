@@ -34,68 +34,68 @@ window.App = {
 		}
 	},
 
-	broker_request: async () => {
+	entity_request: async () => {
 		var self = this;
-		document.getElementById("broker_request_status").innerHTML = "Pending";
-		document.getElementById("broker_address").innerHTML = 0;
-		document.getElementById("broker_id").innerHTML = 0;
-		document.getElementById("broker_hash").innerHTML = 0;
-		document.getElementById("broker_signature").innerHTML = 0;
+		document.getElementById("entity_request_status").innerHTML = "Pending";
+		document.getElementById("entity_address").innerHTML = 0;
+		document.getElementById("entity_id").innerHTML = 0;
+		document.getElementById("entity_hash").innerHTML = 0;
+		document.getElementById("entity_signature").innerHTML = 0;
 
 		// get tx sender address (current admin!)
 		const sender_address = await xyz_get_account_by_index(0);
 		if (sender_address == null) {
-			document.getElementById("broker_request_status").innerHTML = "Failed";
+			document.getElementById("entity_request_status").innerHTML = "Failed";
 			alert("Unable to get default address, aborting!");
 			return;
 		}
-		const id = document.getElementById('broker_appid').value;
+		const id = document.getElementById('entity_appid').value;
 		if (!id) {
-			document.getElementById("broker_request_status").innerHTML = "Failed";
-			document.getElementById("broker_address").innerHTML = sender_address;
+			document.getElementById("entity_request_status").innerHTML = "Failed";
+			document.getElementById("entity_address").innerHTML = sender_address;
 			alert("Empty Id!");
 			return;
 		}
-		const message = document.getElementById('broker_message').value;
+		const message = document.getElementById('entity_message').value;
 		if (!message) {
-			document.getElementById("broker_request_status").innerHTML = "Failed";
-			document.getElementById("broker_address").innerHTML = sender_address;
+			document.getElementById("entity_request_status").innerHTML = "Failed";
+			document.getElementById("entity_address").innerHTML = sender_address;
 			alert("Empty message!");
 			return;
 		}
-		console.log("Broker Message:", message);
+		console.log("Entity Message:", message);
 		// calculate hash of message
 		const hash = web3.utils.sha3(message);
-		console.log("Broker Hash:", hash);
+		console.log("Entity Hash:", hash);
 
 		const signature = await xyz_ykts_sign(ykts_contract, sender_address, hash);
-		console.log("Broker Signature: ", signature);
+		console.log("Entity Signature: ", signature);
 
 		// recover signer address
 		const recover = await xyz_ykts_recover(ykts_contract, hash, signature);
-		console.log("Broker Recover: ", recover);
+		console.log("Entity Recover: ", recover);
 
 		if (sender_address != recover) {
-			document.getElementById("broker_request_status").innerHTML = "Failed";
-			document.getElementById("broker_address").innerHTML = sender_address;
+			document.getElementById("entity_request_status").innerHTML = "Failed";
+			document.getElementById("entity_address").innerHTML = sender_address;
 			alert("Address/Recover mismatch!");
 			return;
 		}
 		// request for approval
-		const response = await xyz_ykts_broker_request(ykts_contract, sender_address, id, hash, signature);
+		const response = await xyz_ykts_entity_request(ykts_contract, sender_address, id, hash, signature);
 		if (!response) {
-			document.getElementById("broker_request_status").innerHTML = "Failed";
-			document.getElementById("broker_address").innerHTML = sender_address;
+			document.getElementById("entity_request_status").innerHTML = "Failed";
+			document.getElementById("entity_address").innerHTML = sender_address;
 			alert("Approval request failed!");
 			return;
 		}
-		console.log("Broker Response: ", response);
+		console.log("Entity Response: ", response);
 
-		document.getElementById("broker_request_status").innerHTML = response.status;
-		document.getElementById("broker_address").innerHTML = sender_address;
-		document.getElementById("broker_id").innerHTML = id;
-		document.getElementById("broker_hash").innerHTML = hash;
-		document.getElementById("broker_signature").innerHTML = signature;
+		document.getElementById("entity_request_status").innerHTML = response.status;
+		document.getElementById("entity_address").innerHTML = sender_address;
+		document.getElementById("entity_id").innerHTML = id;
+		document.getElementById("entity_hash").innerHTML = hash;
+		document.getElementById("entity_signature").innerHTML = signature;
 	},
 
 };

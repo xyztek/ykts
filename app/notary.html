@@ -32,5 +32,16 @@
     <div><b>Sender Address: <span style="color:blue;font-weight:bold" id="approve_broker_sender"></span></div>
   </p>
 
+  <h3>Search Entity in Queue</h3>
+  <input type="text" size="50" id="search_entity_address" placeholder="enter address to search entity"></input>
+  <br />
+  <button id="send" onclick="App.search_entity()">Search Entity</button>
+  <p>
+    <div><b>Status: <span style="color:blue;font-weight:bold" id="search_entity_status"></span></div>
+    <div><b>Entity AppID: <span style="color:blue;font-weight:bold" id="info_entity_id"></span></div>
+    <div><b>Entity Address: <span style="color:blue;font-weight:bold" id="info_entity_address"></span></div>
+    <div><b>Entity PoA Hash: <span style="color:blue;font-weight:bold" id="info_entity_hash"></span></div>
+  </p>
+
 </body>
 </html>

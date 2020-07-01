@@ -1,5 +1,5 @@
 import { xyz_create_web3_provider, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
-import { xyz_ykts_get_contract, xyz_ykts_add_broker, xyz_ykts_broker_queue_by_address } from './ykts.js';
+import { xyz_ykts_get_contract, xyz_ykts_add_broker, xyz_ykts_broker_queue_by_address, xyz_ykts_entity_queue_by_address } from './ykts.js';
 
 // YKTS contract interface
 var ykts_contract;
@@ -97,6 +97,38 @@ window.App = {
 		document.getElementById("approve_broker_status").innerHTML = response.status;
 		document.getElementById("approve_broker_sender").innerHTML = sender_address;
 	},
+
+	search_entity: async () => {
+		var self = this;
+		document.getElementById("search_entity_status").innerHTML = "Pending";
+		document.getElementById("info_entity_id").innerHTML = 0;
+		document.getElementById("info_entity_address").innerHTML = 0;
+		document.getElementById("info_entity_hash").innerHTML = 0;
+
+		const search_entity_address = document.getElementById('search_entity_address').value;
+		if (!search_entity_address) {
+			document.getElementById("search_entity_status").innerHTML = "Failed";
+			alert("Empty Entity Address!");
+			return;
+		}
+		// get entity in queue by address
+		const response = await xyz_ykts_entity_queue_by_address(ykts_contract, search_entity_address);
+		if (!response) {
+			document.getElementById("search_entity_status").innerHTML = "Failed";
+			alert("Search request failed!");
+			return;
+		}
+		const address = response[0];
+		const id = response[1];
+		const hash = response[2];
+		console.log("Search Response: ", response);
+		// OK
+		document.getElementById("search_entity_status").innerHTML = "OK";
+		document.getElementById("info_entity_id").innerHTML = id;
+		document.getElementById("info_entity_address").innerHTML = address;
+		document.getElementById("info_entity_hash").innerHTML = hash;
+	},
+
 };
 
 // hooking up web3 provider

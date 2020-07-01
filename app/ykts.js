@@ -264,6 +264,25 @@ export async function xyz_ykts_entity_request(contract, address, id, msg_hash, s
 	return response;
 }
 
+// approve entity request (only allowed to notaries)
+export async function xyz_ykts_add_entity(contract, current_notary, entity) {
+	var response = null;
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_add_entity] contract invalid");
+			return null;
+		}
+		await contract.methods.addEntity(entity).send({from: current_notary})
+		.then(function(receipt){
+			response = receipt;
+		});
+	} catch (e) {
+		console.error("[xyz_ykts_add_entity] " + e.message);
+		return null;
+	}
+	return response;
+}
+
 // get entity queue
 export async function xyz_ykts_entity_queue(contract) {
 	var count = null;

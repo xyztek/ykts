@@ -1,5 +1,5 @@
 import { xyz_create_web3_provider, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
-import { xyz_ykts_get_contract, xyz_ykts_add_broker, xyz_ykts_broker_queue_by_address, xyz_ykts_add_entity, xyz_ykts_entity_queue_by_address } from './ykts.js';
+import { xyz_ykts_get_contract, xyz_ykts_add_broker, xyz_ykts_get_broker_queue_by_address, xyz_ykts_add_entity, xyz_ykts_get_entity_queue_by_address } from './ykts.js';
 
 // YKTS contract interface
 var ykts_contract;
@@ -48,7 +48,7 @@ window.App = {
 			return;
 		}
 		// get broker in queue by address
-		const response = await xyz_ykts_broker_queue_by_address(ykts_contract, search_broker_address);
+		const response = await xyz_ykts_get_broker_queue_by_address(ykts_contract, search_broker_address);
 		if (!response) {
 			document.getElementById("search_broker_status").innerHTML = "Failed";
 			alert("Search request failed!");
@@ -112,7 +112,7 @@ window.App = {
 			return;
 		}
 		// get entity in queue by address
-		const response = await xyz_ykts_entity_queue_by_address(ykts_contract, search_entity_address);
+		const response = await xyz_ykts_get_entity_queue_by_address(ykts_contract, search_entity_address);
 		if (!response) {
 			document.getElementById("search_entity_status").innerHTML = "Failed";
 			alert("Search request failed!");

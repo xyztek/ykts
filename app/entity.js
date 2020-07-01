@@ -63,6 +63,7 @@ window.App = {
 			alert("Empty message!");
 			return;
 		}
+		var proxies = [];
 		const entity_proxy0 = document.getElementById('entity_proxy0').value;
 		if (!entity_proxy0) {
 			document.getElementById("entity_request_status").innerHTML = "Failed";
@@ -71,6 +72,11 @@ window.App = {
 			return;
 		}
 		const entity_proxy1 = document.getElementById('entity_proxy1').value;
+		// create a proxy array
+		proxies[0] = entity_proxy0;
+		if (entity_proxy1) {
+			proxies[1] = entity_proxy0;
+		}
 
 		console.log("Entity Message:", message);
 		// calculate hash of message
@@ -91,7 +97,7 @@ window.App = {
 			return;
 		}
 		// request for approval
-		const response = await xyz_ykts_entity_request(ykts_contract, sender_address, id, hash, signature);
+		const response = await xyz_ykts_entity_request(ykts_contract, sender_address, id, hash, signature, proxies);
 		if (!response) {
 			document.getElementById("entity_request_status").innerHTML = "Failed";
 			document.getElementById("entity_address").innerHTML = sender_address;

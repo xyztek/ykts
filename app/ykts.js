@@ -245,6 +245,25 @@ export async function xyz_ykts_broker_queue_by_address(contract, address) {
 	return broker;
 }
 
+// request entity approval
+export async function xyz_ykts_entity_request(contract, address, id, msg_hash, signature, proxies) {
+	var response = null;
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_entity_request] contract invalid");
+			return null;
+		}
+		await contract.methods.requestEntityApproval(id, msg_hash, signature, proxies).send({from: address})
+		.then(function(receipt){
+			response = receipt;
+		});
+	} catch (e) {
+		console.error("[xyz_ykts_entity_request] " + e.message);
+		return null;
+	}
+	return response;
+}
+
 // get entity queue
 export async function xyz_ykts_entity_queue(contract) {
 	var count = null;

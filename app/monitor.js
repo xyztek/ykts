@@ -97,25 +97,44 @@ window.App = {
 		document.getElementById("broker_addresses").innerHTML = addrs;
 	},
 
+	list_entity_queue: async () => {
+		var self = this;
+		document.getElementById("entity_queue_status").innerHTML = "Pending";
+		document.getElementById("entity_queue_count").innerHTML = 0;
+		document.getElementById("entity_queue_addresses").innerHTML = 0;
+
+		// get brokers in queue
+		entities_in_queue = await xyz_ykts_broker_queue(ykts_contract);
+		if (entities_in_queue == null) {
+			alert("Entities in queue is null");
+			return;
+		}
+		console.log("Entities Queue Count:", entities_in_queue.length);
+		console.log("Entities Queue Addresses:", entities_in_queue);
+		// OK
+		document.getElementById("entity_queue_status").innerHTML = "OK";
+		document.getElementById("entity_queue_count").innerHTML = entities_in_queue.length;
+		document.getElementById("entity_queue_addresses").innerHTML = entities_in_queue;
+	},
+
 	list_broker_queue: async () => {
 		var self = this;
 		document.getElementById("broker_queue_status").innerHTML = "Pending";
 		document.getElementById("broker_queue_count").innerHTML = 0;
 		document.getElementById("broker_queue_addresses").innerHTML = 0;
 
-		// get broker queue count
-		const count = await ykts_contract.methods.getBrokerInQueueCount().call();
-		console.log("Broker Queue Count:", count)
-
-		var addrs = [];
-		for (var i = 0; i < count; i++) {
-			addrs[i] = await ykts_contract.methods.getBrokerInQueue(i).call();
+		// get brokers in queue
+		brokers_in_queue = await xyz_ykts_broker_queue(ykts_contract);
+		if (brokers_in_queue == null) {
+			alert("Brokers in queue is null");
+			return;
 		}
-		console.log("Broker Queue Addresses:", addrs)
+		console.log("Broker Queue Count:", brokers_in_queue.length);
+		console.log("Broker Queue Addresses:", brokers_in_queue);
 		// OK
 		document.getElementById("broker_queue_status").innerHTML = "OK";
-		document.getElementById("broker_queue_count").innerHTML = count;
-		document.getElementById("broker_queue_addresses").innerHTML = addrs;
+		document.getElementById("broker_queue_count").innerHTML = brokers_in_queue.length;
+		document.getElementById("broker_queue_addresses").innerHTML = brokers_in_queue;
 	},
 };
 

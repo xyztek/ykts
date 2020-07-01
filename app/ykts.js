@@ -224,6 +224,27 @@ export async function xyz_ykts_broker_queue(contract) {
 	return brokers;
 }
 
+// get broker queue item by address
+export async function xyz_ykts_broker_queue_by_address(contract, address) {
+	var broker = null;
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_broker_queue_by_address] contract invalid");
+			return null;
+		}
+		if (web3.utils.isAddress(address) != true) {
+			console.error("[xyz_ykts_broker_queue_by_address] address invalid");
+			return null;
+		}
+		// assign to broker info [address, id, hash]
+		broker = await contract.methods.getBrokerInQueueByAddress(address).call();
+	} catch (e) {
+		console.error("[xyz_ykts_broker_queue_by_address] " + e.message);
+		return null;
+	}
+	return broker;
+}
+
 // get entity queue
 export async function xyz_ykts_entity_queue(contract) {
 	var count = null;

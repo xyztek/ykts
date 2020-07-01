@@ -63,6 +63,15 @@ window.App = {
 			alert("Empty message!");
 			return;
 		}
+		const entity_proxy0 = document.getElementById('entity_proxy0').value;
+		if (!entity_proxy0) {
+			document.getElementById("entity_request_status").innerHTML = "Failed";
+			document.getElementById("entity_address").innerHTML = sender_address;
+			alert("Empty Proxy0!");
+			return;
+		}
+		const entity_proxy1 = document.getElementById('entity_proxy1').value;
+
 		console.log("Entity Message:", message);
 		// calculate hash of message
 		const hash = web3.utils.sha3(message);

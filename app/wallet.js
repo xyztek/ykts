@@ -39,9 +39,10 @@ window.App = {
 		document.getElementById("balance").innerHTML = web3.utils.fromWei(balance, 'ether');
 	},
 
-  // send ether
-  send_ether: function() {
-    var self = this;
+
+	list_broker_queue: async () => {
+		var self = this;
+		
     let amount = parseFloat(document.getElementById("ethamount").value);
     if (isNaN(amount)) {
       document.getElementById("sendethstatus").innerHTML = "error: invalid amount";

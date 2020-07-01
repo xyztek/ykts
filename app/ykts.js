@@ -201,6 +201,53 @@ export async function xyz_ykts_add_broker(contract, current_notary, broker) {
 	return response;
 }
 
+// get broker queue
+export async function xyz_ykts_broker_queue(contract) {
+	var count = null;
+	var brokers = [];
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_broker_queue] contract invalid");
+			return null;
+		}
+		// get entity queue count
+		count = await contract.methods.getBrokerInQueueCount().call();
+		for (var i = 0; i < count; i++) {
+			// assign to broker array
+			brokers[i] = await contract.methods.getBrokerInQueue(i).call();
+		}
+	} catch (e) {
+		console.error("[xyz_ykts_broker_queue] " + e.message);
+		return null;
+	}
+	return brokers;
+}
+
+// get entity queue
+export async function xyz_ykts_entity_queue(contract) {
+	var count = null;
+	var entities = [];
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_entity_queue] contract invalid");
+			return null;
+		}
+		// get entity queue count
+		count = await contract.methods.getEntityInQueueCount().call();
+		for (var i = 0; i < count; i++) {
+			// assign to entity array
+			entities[i] = await contract.methods.getEntityInQueue(i).call();
+		}
+	} catch (e) {
+		console.error("[xyz_ykts_entity_queue] " + e.message);
+		return null;
+	}
+	return entities;
+}
+
+
+
+
 
 
 export async function xyz_ykts_is_signer(owner, hash, signature) {

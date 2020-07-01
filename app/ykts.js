@@ -287,7 +287,26 @@ export async function xyz_ykts_entity_queue(contract) {
 	return entities;
 }
 
-
+// get entity queue item by address
+export async function xyz_ykts_entity_queue_by_address(contract, address) {
+	var entity = null;
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_entity_queue_by_address] contract invalid");
+			return null;
+		}
+		if (web3.utils.isAddress(address) != true) {
+			console.error("[xyz_ykts_entity_queue_by_address] address invalid");
+			return null;
+		}
+		// assign to entity info [address, id, hash]
+		entity = await contract.methods.getEntityInQueueByAddress(address).call();
+	} catch (e) {
+		console.error("[xyz_ykts_entity_queue_by_address] " + e.message);
+		return null;
+	}
+	return entity;
+}
 
 
 

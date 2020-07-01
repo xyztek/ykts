@@ -1,5 +1,5 @@
 import { xyz_create_web3_provider, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
-import { xyz_ykts_get_contract, xyz_ykts_add_broker } from './ykts.js';
+import { xyz_ykts_get_contract, xyz_ykts_add_broker, xyz_ykts_broker_queue_by_address } from './ykts.js';
 
 // YKTS contract interface
 var ykts_contract;
@@ -32,6 +32,37 @@ window.App = {
 			alert("Unable to get ./build/YKTS.json smart contract on '" + network_name + "' network, aborting!");
 			return;
 		}
+	},
+
+	search_broker: async () => {
+		var self = this;
+		document.getElementById("search_broker_status").innerHTML = "Pending";
+		document.getElementById("info_search_id").innerHTML = 0;
+		document.getElementById("info_search_address").innerHTML = 0;
+		document.getElementById("info_search_hash").innerHTML = 0;
+
+		const search_broker_address = document.getElementById('search_broker_address').value;
+		if (!search_broker_address) {
+			document.getElementById("search_broker_status").innerHTML = "Failed";
+			alert("Empty Broker Address!");
+			return;
+		}
+		// get broker in queue by address
+		const response = await xyz_ykts_broker_queue_by_address(ykts_contract, search_broker_address);
+		if (!response) {
+			document.getElementById("search_broker_status").innerHTML = "Failed";
+			alert("Search request failed!");
+			return;
+		}
+		const address = response[0];
+		const id = response[1];
+		const hash = response[2];
+		console.log("Search Response: ", response);
+		// OK
+		document.getElementById("search_broker_status").innerHTML = "OK";
+		document.getElementById("info_search_id").innerHTML = id;
+		document.getElementById("info_search_address").innerHTML = address;
+		document.getElementById("info_search_hash").innerHTML = hash;
 	},
 
 	approve_broker: async () => {

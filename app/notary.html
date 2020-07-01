@@ -12,7 +12,18 @@
     <span style="color:red;font-weight:bold" id="note"></span>
   </p>
 
-  <h3>Approve Broker</h3>
+  <h3>Search Broker in Queue</h3>
+  <input type="text" size="50" id="search_broker_address" placeholder="enter address to search broker"></input>
+  <br />
+  <button id="send" onclick="App.search_broker()">Search Broker</button>
+  <p>
+    <div><b>Status: <span style="color:blue;font-weight:bold" id="search_broker_status"></span></div>
+    <div><b>Broker AppID: <span style="color:blue;font-weight:bold" id="info_search_id"></span></div>
+    <div><b>Broker Address: <span style="color:blue;font-weight:bold" id="info_search_address"></span></div>
+    <div><b>Broker PoC Hash: <span style="color:blue;font-weight:bold" id="info_search_hash"></span></div>
+  </p>
+
+  <h3>Approve Broker in Queue</h3>
   <input type="text" size="50" id="new_broker_address" placeholder="enter address to approve broker"></input>
   <br />
   <button id="send" onclick="App.approve_broker()">Approve Broker</button>

@@ -214,7 +214,7 @@ export async function xyz_ykts_broker_queue(contract) {
 		count = await contract.methods.getBrokerInQueueCount().call();
 		for (var i = 0; i < count; i++) {
 			// assign to broker array [address, id, hash]
-			const values = await contract.methods.getBrokerInQueue(i).call();
+			const values = await contract.methods.getBrokerInQueueByIndex(i).call();
 			brokers[i] = values[0];
 		}
 	} catch (e) {
@@ -237,7 +237,7 @@ export async function xyz_ykts_entity_queue(contract) {
 		count = await contract.methods.getEntityInQueueCount().call();
 		for (var i = 0; i < count; i++) {
 			// assign to entity array [address, id, hash]
-			const values = await contract.methods.getEntityInQueue(i).call();
+			const values = await contract.methods.getEntityInQueueByIndex(i).call();
 			entities[i] = values[0];
 		}
 	} catch (e) {

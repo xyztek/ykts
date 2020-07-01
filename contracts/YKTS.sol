@@ -163,8 +163,8 @@ contract YKTS is AccessControl {
         require(bytes(entity_address_map[account].id).length > 0, "Entity should have applied before!");
         require(entity_address_map[account].proxies.length() > 0, "Entity should have at least one proxy!");
         // check if proxy Brokers are still valid
-        for (uint256 i = 0; i < entity_address_map[msg.sender].proxies.length(); i++) {
-            if (isBroker(entity_address_map[msg.sender].proxies.at(i)) != true) {
+        for (uint256 i = 0; i < entity_address_map[account].proxies.length(); i++) {
+            if (isBroker(entity_address_map[account].proxies.at(i)) != true) {
                 return false;
             }
         }

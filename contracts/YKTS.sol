@@ -208,9 +208,7 @@ contract YKTS is AccessControl {
     /// @dev Return info on the broker in queue by index
     function getBrokerInQueueByIndex(uint256 index) public view returns(address, string memory, bytes32) {
         require(broker_approval_queue.length() > index, "Broker queue length should be greater than index!");
-        return (broker_address_map[broker_approval_queue.at(index)].owner,
-                broker_address_map[broker_approval_queue.at(index)].id,
-                broker_address_map[broker_approval_queue.at(index)].PoC);
+        return getBrokerInQueueByAddress(broker_approval_queue.at(index));
     }
     /// @dev Return info on the broker in queue by address
     function getBrokerInQueueByAddress(address account) public view returns(address, string memory, bytes32) {
@@ -219,13 +217,21 @@ contract YKTS is AccessControl {
                 broker_address_map[account].id,
                 broker_address_map[account].PoC);
     }
-    /// @dev Get the total number of brokers.
+    /// @dev Get the total number of brokers
     function getBrokerCount() public view returns (uint256) {
         return getRoleMemberCount(BROKER_ROLE);
     }
-    /// @dev Get the total number of brokers.
-    function getBroker(uint256 index) public view returns (address) {
-        return getRoleMember(BROKER_ROLE, index);
+    /// @dev Get broker by index
+    function getBrokerByIndex(uint256 index) public view returns (address, string memory, bytes32) {
+        return getBrokerByAddress(getRoleMember(BROKER_ROLE, index));
+    }
+    /// @dev Get broker by address
+    function getBrokerByAddress(address account) public view returns (address, string memory, bytes32) {
+        require(isBroker(account), "Broker not approved!");
+        require(bytes(broker_address_map[account].id).length > 0, "Broker should have applied before!");
+        return (broker_address_map[account].owner,
+                broker_address_map[account].id,
+                broker_address_map[account].PoC);
     }
     /// @dev Remove oneself from the broker role.
     function renounceBroker() public {
@@ -275,9 +281,7 @@ contract YKTS is AccessControl {
     /// @dev Return info on the entity in the queue by index
     function getEntityInQueueByIndex(uint256 index) public view returns(address, string memory, bytes32) {
         require(entity_approval_queue.length() > index, "Entity queue length should be greater than index!");
-        return (entity_address_map[entity_approval_queue.at(index)].owner,
-                entity_address_map[entity_approval_queue.at(index)].id,
-                entity_address_map[entity_approval_queue.at(index)].PoA);
+        return getEntityInQueueByAddress(entity_approval_queue.at(index));
     }
     /// @dev Return info on the entity in the queue by address
     function getEntityInQueueByAddress(address account) public view returns(address, string memory, bytes32) {
@@ -290,9 +294,17 @@ contract YKTS is AccessControl {
     function getEntityCount() public view returns (uint256) {
         return getRoleMemberCount(ENTITY_ROLE);
     }
-    /// @dev Get the total number of entities.
-    function getEntity(uint256 index) public view returns (address) {
-        return getRoleMember(ENTITY_ROLE, index);
+    /// @dev Get entity by index
+    function getEntityByIndex(uint256 index) public view returns (address, string memory, bytes32) {
+        return getEntityByAddress(getRoleMember(ENTITY_ROLE, index));
+    }
+    /// @dev Get entity by address
+    function getEntityByAddress(address account) public view returns (address, string memory, bytes32) {
+        require(isEntity(account), "Entity not approved!");
+        require(bytes(entity_address_map[account].id).length > 0, "Entity should have applied before!");
+        return (entity_address_map[account].owner,
+                entity_address_map[account].id,
+                entity_address_map[account].PoA);
     }
     /// @dev Remove oneself from the entity role.
     function renounceEntity() public virtual {

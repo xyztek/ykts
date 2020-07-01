@@ -201,16 +201,39 @@ export async function xyz_ykts_add_broker(contract, current_notary, broker) {
 	return response;
 }
 
-// get broker queue
-export async function xyz_ykts_broker_queue(contract) {
+// get brokers
+export async function xyz_ykts_get_brokers(contract) {
 	var count = null;
 	var brokers = [];
 	try {
 		if (contract.methods == null) {
-			console.error("[xyz_ykts_broker_queue] contract invalid");
+			console.error("[xyz_ykts_get_brokers] contract invalid");
 			return null;
 		}
-		// get entity queue count
+		// get brokers count
+		count = await contract.methods.getBrokerCount().call();
+		for (var i = 0; i < count; i++) {
+			// assign to broker array [address, id, hash]
+			const values = await contract.methods.getBrokerByIndex(i).call();
+			brokers[i] = values[0];
+		}
+	} catch (e) {
+		console.error("[xyz_ykts_get_brokers] " + e.message);
+		return null;
+	}
+	return brokers;
+}
+
+// get broker queue
+export async function xyz_ykts_get_broker_queue(contract) {
+	var count = null;
+	var brokers = [];
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_get_broker_queue] contract invalid");
+			return null;
+		}
+		// get broker queue count
 		count = await contract.methods.getBrokerInQueueCount().call();
 		for (var i = 0; i < count; i++) {
 			// assign to broker array [address, id, hash]
@@ -218,28 +241,28 @@ export async function xyz_ykts_broker_queue(contract) {
 			brokers[i] = values[0];
 		}
 	} catch (e) {
-		console.error("[xyz_ykts_broker_queue] " + e.message);
+		console.error("[xyz_ykts_get_broker_queue] " + e.message);
 		return null;
 	}
 	return brokers;
 }
 
 // get broker queue item by address
-export async function xyz_ykts_broker_queue_by_address(contract, address) {
+export async function xyz_ykts_get_broker_queue_by_address(contract, address) {
 	var broker = null;
 	try {
 		if (contract.methods == null) {
-			console.error("[xyz_ykts_broker_queue_by_address] contract invalid");
+			console.error("[xyz_ykts_get_broker_queue_by_address] contract invalid");
 			return null;
 		}
 		if (web3.utils.isAddress(address) != true) {
-			console.error("[xyz_ykts_broker_queue_by_address] address invalid");
+			console.error("[xyz_ykts_get_broker_queue_by_address] address invalid");
 			return null;
 		}
 		// assign to broker info [address, id, hash]
 		broker = await contract.methods.getBrokerInQueueByAddress(address).call();
 	} catch (e) {
-		console.error("[xyz_ykts_broker_queue_by_address] " + e.message);
+		console.error("[xyz_ykts_get_broker_queue_by_address] " + e.message);
 		return null;
 	}
 	return broker;
@@ -283,13 +306,36 @@ export async function xyz_ykts_add_entity(contract, current_notary, entity) {
 	return response;
 }
 
-// get entity queue
-export async function xyz_ykts_entity_queue(contract) {
+// get entities
+export async function xyz_ykts_get_entities(contract) {
 	var count = null;
 	var entities = [];
 	try {
 		if (contract.methods == null) {
-			console.error("[xyz_ykts_entity_queue] contract invalid");
+			console.error("[xyz_ykts_get_entities] contract invalid");
+			return null;
+		}
+		// get entity count
+		count = await contract.methods.getEntityCount().call();
+		for (var i = 0; i < count; i++) {
+			// assign to broker array [address, id, hash]
+			const values = await contract.methods.getEntityByIndex(i).call();
+			entities[i] = values[0];
+		}
+	} catch (e) {
+		console.error("[xyz_ykts_get_entities] " + e.message);
+		return null;
+	}
+	return entities;
+}
+
+// get entity queue
+export async function xyz_ykts_get_entity_queue(contract) {
+	var count = null;
+	var entities = [];
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_get_entity_queue] contract invalid");
 			return null;
 		}
 		// get entity queue count
@@ -300,28 +346,28 @@ export async function xyz_ykts_entity_queue(contract) {
 			entities[i] = values[0];
 		}
 	} catch (e) {
-		console.error("[xyz_ykts_entity_queue] " + e.message);
+		console.error("[xyz_ykts_get_entity_queue] " + e.message);
 		return null;
 	}
 	return entities;
 }
 
 // get entity queue item by address
-export async function xyz_ykts_entity_queue_by_address(contract, address) {
+export async function xyz_ykts_get_entity_queue_by_address(contract, address) {
 	var entity = null;
 	try {
 		if (contract.methods == null) {
-			console.error("[xyz_ykts_entity_queue_by_address] contract invalid");
+			console.error("[xyz_ykts_get_entity_queue_by_address] contract invalid");
 			return null;
 		}
 		if (web3.utils.isAddress(address) != true) {
-			console.error("[xyz_ykts_entity_queue_by_address] address invalid");
+			console.error("[xyz_ykts_get_entity_queue_by_address] address invalid");
 			return null;
 		}
 		// assign to entity info [address, id, hash]
 		entity = await contract.methods.getEntityInQueueByAddress(address).call();
 	} catch (e) {
-		console.error("[xyz_ykts_entity_queue_by_address] " + e.message);
+		console.error("[xyz_ykts_get_entity_queue_by_address] " + e.message);
 		return null;
 	}
 	return entity;

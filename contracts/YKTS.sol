@@ -157,27 +157,48 @@ contract YKTS is AccessControl {
     function removeBroker(address account) public onlyNotary {
         revokeRole(BROKER_ROLE, account);
     }
+    /// @dev Add an account to the entity role. Restricted to notaries.
+    function addEntity(address account) public onlyNotary returns(bool) {
+        require(entity_approval_queue.contains(account), "Entity queue should contain the address!");
+        require(bytes(entity_address_map[account].id).length > 0, "Entity should have applied before!");
+        require(entity_address_map[account].proxies.length() > 0, "Entity should have at least one proxy!");
+        // check if proxy Brokers are still valid
+        for (uint256 i = 0; i < entity_address_map[msg.sender].proxies.length(); i++) {
+            if (isBroker(entity_address_map[msg.sender].proxies.at(i)) != true) {
+                return false;
+            }
+        }
+        if (entity_approval_queue.remove(account) != true) {
+            return false;
+        }
+        grantRole(ENTITY_ROLE, account);
+        return true;
+    }
+    /// @dev Remove an account from the entity role. Restricted to notaries.
+    function removeEntity(address account) public virtual onlyNotary {
+        revokeRole(ENTITY_ROLE, account);
+    }
 
 
 
     /// @dev Return `true` if the broker approval request is valid and queued for notary
-    function requestBrokerApproval(string memory id, bytes32 poc_hash, bytes memory signature) public returns(bool) {
+    function requestBrokerApproval(string memory id, bytes32 PoC_hash, bytes memory signature) public returns(bool) {
         // check if id is empty
-        require(bytes(id).length > 0, "Broker id can not be empty!");
+        require(bytes(id).length > 0, "Broker application id can not be empty!");
         // check address mapping, if present
         require(bytes(broker_address_map[msg.sender].id).length == 0, "Broker already approved, address present!");
         // check Proof of Competence document hash signature
-        if (isSigner(msg.sender, poc_hash, signature) != true) {
+        if (isSigner(msg.sender, PoC_hash, signature) != true) {
             return false;
         }
+        // fill the mapping
+        broker_address_map[msg.sender].id = id;
+        broker_address_map[msg.sender].owner = msg.sender;
+        broker_address_map[msg.sender].PoC = PoC_hash;
         // add to notary approval queue
         if (broker_approval_queue.add(msg.sender) != true) {
             return false;
         }
-        // fill the mapping once queued for approval
-        broker_address_map[msg.sender].id = id;
-        broker_address_map[msg.sender].owner = msg.sender;
-        broker_address_map[msg.sender].PoC = poc_hash;
         return true;
     }
     /// @dev Return the count of the broker approval requests queued for notarization
@@ -204,13 +225,56 @@ contract YKTS is AccessControl {
 
 
 
-    /// @dev Add an account to the entity role. Restricted to notaries.
-    function addEntity(address account) public virtual onlyNotary {
-        grantRole(ENTITY_ROLE, account);
+    /// @dev Return `true` if the entity approval request is valid and queued for notary
+    function requestEntityApproval(string memory id, bytes32 PoA_hash, bytes memory signature, address[] memory proxies) public returns(bool) {
+        // check if id is empty
+        require(bytes(id).length > 0, "Entity application id can not be empty!");
+        // check if proxies is empty
+        require(proxies.length > 0, "Entity proxies can not be empty!");
+        // check address mapping, if present
+        require(bytes(entity_address_map[msg.sender].id).length == 0, "Entity already approved, address present!");
+        // check Power of Attorney document hash signature
+        if (isSigner(msg.sender, PoA_hash, signature) != true) {
+            return false;
+        }
+        // check if proxies are already approved as Brokers
+        for (uint256 i = 0; i < proxies.length; i++) {
+            if (isBroker(proxies[i]) != true) {
+                return false;
+            }
+        }
+        // fill the mapping
+        entity_address_map[msg.sender].id = id;
+        entity_address_map[msg.sender].owner = msg.sender;
+        entity_address_map[msg.sender].PoA = PoA_hash;
+        for (uint256 i = 0; i < proxies.length; i++) {
+            if (entity_address_map[msg.sender].proxies.add(proxies[i]) != true) {
+                // TODO error handling?
+                return false;
+            }
+        }
+        // add to notary approval queue
+        if (entity_approval_queue.add(msg.sender) != true) {
+            return false;
+        }
+        return true;
     }
-    /// @dev Remove an account from the entity role. Restricted to notaries.
-    function removeEntity(address account) public virtual onlyNotary {
-        revokeRole(ENTITY_ROLE, account);
+    /// @dev Return the count of the broker approval requests queued for notarization
+    function getEntityInQueueCount() public view returns(uint256) {
+        return entity_approval_queue.length();
+    }
+    /// @dev Return address of the broker at (notarization) queue index
+    function getEntityInQueue(uint256 index) public view returns(address) {
+        require(entity_approval_queue.length() > index, "Entity queue length should be greater than index!");
+        return entity_approval_queue.at(index);
+    }
+    /// @dev Get the total number of entities.
+    function getEntityCount() public view returns (uint256) {
+        return getRoleMemberCount(ENTITY_ROLE);
+    }
+    /// @dev Get the total number of entities.
+    function getEntity(uint256 index) public view returns (address) {
+        return getRoleMember(ENTITY_ROLE, index);
     }
     /// @dev Remove oneself from the entity role.
     function renounceEntity() public virtual {

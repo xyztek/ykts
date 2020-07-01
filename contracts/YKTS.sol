@@ -206,9 +206,10 @@ contract YKTS is AccessControl {
         return broker_approval_queue.length();
     }
     /// @dev Return address of the broker at (notarization) queue index
-    function getBrokerInQueue(uint256 index) public view returns(address) {
+    function getBrokerInQueue(uint256 index) public view returns(address, string memory, bytes32) {
         require(broker_approval_queue.length() > index, "Broker queue length should be greater than index!");
-        return broker_approval_queue.at(index);
+        address account = broker_approval_queue.at(index);
+        return (broker_address_map[account].owner, broker_address_map[account].id, broker_address_map[account].PoC);
     }
     /// @dev Get the total number of brokers.
     function getBrokerCount() public view returns (uint256) {
@@ -264,9 +265,10 @@ contract YKTS is AccessControl {
         return entity_approval_queue.length();
     }
     /// @dev Return address of the broker at (notarization) queue index
-    function getEntityInQueue(uint256 index) public view returns(address) {
+    function getEntityInQueue(uint256 index) public view returns(address, string memory, bytes32) {
         require(entity_approval_queue.length() > index, "Entity queue length should be greater than index!");
-        return entity_approval_queue.at(index);
+        address account = entity_approval_queue.at(index);
+        return (entity_address_map[account].owner, entity_address_map[account].id, entity_address_map[account].PoA);
     }
     /// @dev Get the total number of entities.
     function getEntityCount() public view returns (uint256) {

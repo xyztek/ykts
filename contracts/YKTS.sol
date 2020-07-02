@@ -320,16 +320,17 @@ contract YKTS is AccessControl {
         return getRoleMemberCount(ENTITY_ROLE);
     }
     /// @dev Get entity by index
-    function getEntityByIndex(uint256 index) public view returns (address, string memory, bytes32) {
+    function getEntityByIndex(uint256 index) public view returns (address, string memory, bytes32, address[] memory) {
         return getEntityByAddress(getRoleMember(ENTITY_ROLE, index));
     }
     /// @dev Get entity by address
-    function getEntityByAddress(address account) public view returns (address, string memory, bytes32) {
+    function getEntityByAddress(address account) public view returns (address, string memory, bytes32, address[] memory) {
         require(isEntity(account), "Entity not approved!");
         require(bytes(entity_address_map[account].id).length > 0, "Entity should have applied before!");
         return (entity_address_map[account].owner,
                 entity_address_map[account].id,
-                entity_address_map[account].PoA);
+                entity_address_map[account].PoA,
+                entity_address_map[account].proxies);
     }
     /// @dev Remove oneself from the entity role.
     function renounceEntity() public virtual {

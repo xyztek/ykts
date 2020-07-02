@@ -72,10 +72,14 @@ window.App = {
 			return;
 		}
 		const entity_proxy1 = document.getElementById('entity_proxy1').value;
+		const entity_proxy2 = document.getElementById('entity_proxy2').value;
 		// create a proxy array
 		proxies[0] = entity_proxy0;
 		if (entity_proxy1) {
 			proxies[1] = entity_proxy1;
+		}
+		if (entity_proxy2) {
+			proxies[2] = entity_proxy2;
 		}
 		console.log("Entity Proxies:", proxies);
 

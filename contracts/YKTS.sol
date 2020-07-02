@@ -304,16 +304,17 @@ contract YKTS is AccessControl {
         return entity_approval_queue.length();
     }
     /// @dev Return info on the entity in the queue by index
-    function getEntityInQueueByIndex(uint256 index) public view returns(address, string memory, bytes32) {
+    function getEntityInQueueByIndex(uint256 index) public view returns(address, string memory, bytes32, address[] memory) {
         require(entity_approval_queue.length() > index, "Entity queue length should be greater than index!");
         return getEntityInQueueByAddress(entity_approval_queue.at(index));
     }
     /// @dev Return info on the entity in the queue by address
-    function getEntityInQueueByAddress(address account) public view returns(address, string memory, bytes32) {
+    function getEntityInQueueByAddress(address account) public view returns(address, string memory, bytes32, address[] memory) {
         require(entity_approval_queue.contains(account) == true, "Entity is not in approval queue!");
         return (entity_address_map[account].owner,
                 entity_address_map[account].id,
-                entity_address_map[account].PoA);
+                entity_address_map[account].PoA,
+                entity_address_map[account].proxies);
     }
     /// @dev Get the total number of entities.
     function getEntityCount() public view returns (uint256) {

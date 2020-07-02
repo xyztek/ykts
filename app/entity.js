@@ -75,8 +75,9 @@ window.App = {
 		// create a proxy array
 		proxies[0] = entity_proxy0;
 		if (entity_proxy1) {
-			proxies[1] = entity_proxy0;
+			proxies[1] = entity_proxy1;
 		}
+		console.log("Entity Proxies:", proxies);
 
 		console.log("Entity Message:", message);
 		// calculate hash of message

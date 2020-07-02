@@ -7,6 +7,11 @@ This repository contains sample YKTS DApp and smart contracts developed for Ethe
 Please check out the `*.js` files in `app` directory.
 
 
+## Simple Flow
+
+![Screenshot](ykts.png "YKTS-Simple-Flow")
+
+
 ## Setting Up
 
 Please refer to the following step-by-step guides to setup and start development with Truffle  

@@ -50,7 +50,7 @@ window.App = {
 		console.log("Test Hash:", hash);
 		// sign
 		const address = await xyz_get_account_by_index(0);
-		const signature = await xyz_ykts_sign(ykts_contract, hash, address);
+		const signature = await xyz_ykts_sign(ykts_contract, address, hash);
 		console.log("Test Signature: ", signature);
 		// verify
 		const ret = await xyz_ykts_is_signer(ykts_contract, address, hash, signature);
@@ -81,7 +81,7 @@ window.App = {
 
 		// sign hash of message with default account
 		const address = await xyz_get_account_by_index(0);
-		const signature = await xyz_ykts_sign(ykts_contract, hash, address);
+		const signature = await xyz_ykts_sign(ykts_contract, address, hash);
 		console.log("Sig Signature: ", signature);
 
 		// recover signer address
@@ -126,7 +126,7 @@ window.App = {
 		// verify the signer for the hash of the message
 		const ret = await xyz_ykts_is_signer(ykts_contract, address, hash, signature);
 		// recover signer address
-		const recover = await xyz_ykts_recoverykts_contract, (hash, signature);
+		const recover = await xyz_ykts_recover(ykts_contract, hash, signature);
 		console.log("Verify Recover: ", recover);
 
 		// update status

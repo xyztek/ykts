@@ -33,8 +33,8 @@ $ truffle test
 
 # create an .env file to store wallet seed and infura api keys in project root dir
 $ cat .env
-MNEMONIC=<wallet seed phrases (may be Metamask)>
-INFURA_API_KEY=<infura api key>
+MNEMONIC=<wallet (Metamask) seed phrases>
+INFURA_PROJECT_ID==<infura project id>
 
 # deploy smart contracts on Rinkeby (used for testing!)
 $ truffle migrate --network rinkeby

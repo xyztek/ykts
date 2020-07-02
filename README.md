@@ -9,7 +9,7 @@ Please check out the `*.js` files in `app` directory.
 
 ## Simple Flow
 
-![Screenshot](ykts.png "YKTS-Simple-Flow")
+![Screenshot](images/ykts.png "YKTS-Simple-Flow")
 
 
 ## Setting Up

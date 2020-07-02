@@ -3,14 +3,13 @@
 ## Install Geth Dependencies
 Download latest `go` package from the [offical Go repository](https://golang.org/dl/) and uncompress it to `/usr/local`
 ```sh
+$ cd $HOME
+$ curl -OL https://dl.google.com/go/go$VERSION.$OS-$ARCH.tar.gz
 $ sudo tar -C /usr/local -xzf go$VERSION.$OS-$ARCH.tar.gz
-```
-
-Add the following lines to the end of `$HOME/.profile`
-```sh
-# add Go paths
-export GOPATH=$HOME/go
-export PATH=/usr/local/go/bin:$GOPATH/bin:$PATH
+# add GOPATH/GOROOT variable and updated path to $HOME/.bashrc
+$ sh -c "echo 'export GOPATH=$HOME/go' >> $HOME/.bashrc"
+$ sh -c "echo 'export GOROOT=/usr/local/go' >> $HOME/.bashrc"
+$ sh -c "echo 'export PATH=$HOME/go/bin:$PATH:/usr/local/go/bin' >> $HOME/.bashrc"
 ```
 
 ### Build Geth and Swarm

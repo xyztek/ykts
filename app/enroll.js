@@ -1,7 +1,8 @@
-import { xyz_get_contract, xyz_ykts_recover, xyz_ykts_is_signer, xyz_ykts_sign, xyz_create_web3_provider, xyz_get_balance, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
+import { xyz_create_web3_provider, xyz_get_account_by_index, xyz_get_network_name, xyz_get_provider_name } from './common.js';
+import { xyz_ykts_get_contract, xyz_ykts_sign, xyz_ykts_is_signer, xyz_ykts_recover } from './ykts.js';
 
-// default account
-var account;
+// YKTS contract interface
+var ykts_contract;
 
 window.App = {
 	start: async () => {
@@ -9,36 +10,27 @@ window.App = {
 
 		// get provider name
 		const provider = await xyz_get_provider_name();
-		if (provider === null) {
+		if (provider == null) {
 				alert("Couldn't get any Web3 providers, probably Metamask/Mist/Infura is not present!");
 				return;
 		}
-		// check Metamask availability and report
-		if (web3.currentProvider.isMetaMask) {
-			document.getElementById("providernote").innerHTML = "Metamask is available, please set network to Rinkeby!"
-		} else {
-			document.getElementById("providernote").innerHTML = "Metamask is NOT available, please use a local node or set 'infuraAPIKey' and connect to Rinkeby network! Some functionality will not work without Metamask";
-		}
-		// get network name
-		const network = await xyz_get_network_name();
-		if (network === null) {
-			alert("Couldn't get any the Ethereum network, probably Metamask/Mist/Infura is not present!");
+		const network_name = await xyz_get_network_name();
+		if (network_name == null) {
+			alert("Couldn't get Ethereum network name, aborting!");
 			return;
 		}
-		// get default account
-		account = await xyz_get_account_by_index(0);
-		if (account === null) {
-			document.getElementById("defaultaddress").innerHTML = "invalid";
+		// check Metamask availability and report
+		if (web3.currentProvider.isMetaMask) {
+			document.getElementById("note").innerHTML = "Metamask is available and Ethereum network is set to '" + network_name + "'";
 		} else {
-			document.getElementById("defaultaddress").innerHTML = account;
+			document.getElementById("note").innerHTML = "Metamask is NOT available, aborting!";
+			return;
 		}
-
-		// get balance
-		const balance = await xyz_get_balance(account);
-		if (balance === null) {
-			document.getElementById("etherbalanceauto").innerHTML = "invalid";
-		} else {
-			document.getElementById("etherbalanceauto").innerHTML = web3.utils.fromWei(balance, 'ether');
+		// parse contract and get abi & address
+		ykts_contract = await xyz_ykts_get_contract();
+		if (ykts_contract == null) {
+			alert("Unable to get ./build/YKTS.json smart contract on '" + network_name + "' network, aborting!");
+			return;
 		}
 	},
 
@@ -58,13 +50,13 @@ window.App = {
 		console.log("Test Hash:", hash);
 		// sign
 		const address = await xyz_get_account_by_index(0);
-		const signature = await xyz_ykts_sign(hash, address);
+		const signature = await xyz_ykts_sign(ykts_contract, hash, address);
 		console.log("Test Signature: ", signature);
 		// verify
-		const ret = await xyz_ykts_is_signer(address, hash, signature);
+		const ret = await xyz_ykts_is_signer(ykts_contract, address, hash, signature);
 		console.log("Test Return: ", ret);
 		// recover
-		const recover = await xyz_ykts_recover(hash, signature);
+		const recover = await xyz_ykts_recover(ykts_contract, hash, signature);
 		console.log("Test Recover: ", recover);
 		// update status
 		document.getElementById("sanityresult").innerHTML = ret;
@@ -89,11 +81,11 @@ window.App = {
 
 		// sign hash of message with default account
 		const address = await xyz_get_account_by_index(0);
-		const signature = await xyz_ykts_sign(hash, address);
+		const signature = await xyz_ykts_sign(ykts_contract, hash, address);
 		console.log("Sig Signature: ", signature);
 
 		// recover signer address
-		const recover = await xyz_ykts_recover(hash, signature);
+		const recover = await xyz_ykts_recover(ykts_contract, hash, signature);
 		console.log("Sign Recover: ", recover);
 
 		document.getElementById("yktsmessagehash").innerHTML = hash;
@@ -132,16 +124,15 @@ window.App = {
 		// calculate hash of message
 		const hash = web3.utils.sha3(message);
 		// verify the signer for the hash of the message
-		const ret = await xyz_ykts_is_signer(address, hash, signature);
+		const ret = await xyz_ykts_is_signer(ykts_contract, address, hash, signature);
 		// recover signer address
-		const recover = await xyz_ykts_recover(hash, signature);
+		const recover = await xyz_ykts_recoverykts_contract, (hash, signature);
 		console.log("Verify Recover: ", recover);
 
 		// update status
 		document.getElementById("yktsverifyresult").innerHTML = ret;
 	}
 };
-
 
 // hooking up web3 provider
 window.addEventListener('load', async () => {

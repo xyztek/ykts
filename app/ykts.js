@@ -373,18 +373,19 @@ export async function xyz_ykts_get_entity_queue_by_address(contract, address) {
 	return entity;
 }
 
-
-
-
-export async function xyz_ykts_is_signer(owner, hash, signature) {
-	// parse contract and get abi & address
-	var contractvars = await xyz_get_contract("YKTS.json");
-	const contract_address = contractvars[0];
-	const contract_abi = contractvars[1];
-	// create smart contract
-	const contract = new web3.eth.Contract(contract_abi, contract_address);
-
-	// check if 'hash' is signed by the 'owner'
-	const result = await contract.methods.isSigner(owner, hash, signature).call();
+// check signer
+export async function xyz_ykts_is_signer(contract, owner, hash, signature) {
+	var result = null;
+	try {
+		if (contract.methods == null) {
+			console.error("[xyz_ykts_is_signer] contract invalid");
+			return null;
+		}
+		// check signer
+		result = await contract.methods.isSigner(owner, hash, signature).call();
+	} catch (e) {
+		console.error("[xyz_ykts_is_signer] " + e.message);
+		return null;
+	}
 	return result;
 }

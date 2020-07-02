@@ -7,18 +7,12 @@
   <script src="./enroll.js" type="module"></script>
 </head>
 <body>
-  <h1>Ethereum Wallet Tests</h1>
+  <h2>Sign/Verify Tests</h2>
   <p>
-    <span style="color:red;font-weight:bold" id="providernote"></span>
+    <span style="color:red;font-weight:bold" id="note"></span>
   </p>
 
-  <h2>Check default Ethereum account ETH balance via Metamask</h2>
-  <p>Your default Ethereum address balance is:
-    <div>Address: <span style="color:blue;font-weight:bold" id="defaultaddress"></span></div>
-    <div>Balance:<span style="color:blue;font-weight:bold" id="etherbalanceauto"></span></div>
-  </p>
-
-  <h2>Sign/Verify Sanity Check</h2>
+  <h3>Sign/Verify Sanity Check</h3>
   <input type="text" size="50" id="sanitymessage" placeholder="enter message to sign"></input>
   <br />
   <button id="send" onclick="App.message_test()">Message</button>
@@ -26,7 +20,7 @@
     <div><b>Sanity Result: </b><span style="color:blue;font-weight:bold" id="sanityresult"></span></div>
   </p>
 
-  <h2>Sign a selected message with your default Ethereum account via Metamask</h2>
+  <h3>Sign a selected message with your default Ethereum account</h3>
   <input type="text" size="50" id="yktsmessagetosign" placeholder="enter message to sign"></input>
   <br />
   <button id="send" onclick="App.message_sign()">Sign Message</button>
@@ -36,7 +30,7 @@
     <div><b>Message Signer: </b><span style="color:blue;font-weight:bold" id="yktssigner"></span></div>
   </p>
 
-  <h2>Verify the signer of a selected message with your default Ethereum account via Metamask</h2>
+  <h3>Verify the signer of a selected message with your default Ethereum account</h3>
   <input type="text" size="50" id="yktsmessagetoverify" placeholder="enter contents"></input>
   <br/>
   <input type="text" size="50" id="yktssignaturetoverify" placeholder="enter signature"></input>

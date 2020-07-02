@@ -11,8 +11,9 @@ Please check out the `*.js` files in `app` directory.
 
 Please refer to the following step-by-step guides to setup and start development with Truffle  
 
-* [How to setup Truffle for macOS and Linux](docs/README.00-truffle.md)
-* [How to build Geth on macOS and Linux](docs/README.01-geth.md)
+* [How to setup Metamask for browsers](docs/README-metamask.md)
+* [How to setup Truffle for macOS and Linux](docs/README-truffle.md)
+* [How to build Geth on macOS and Linux](docs/README-geth.md)
 
 
 ## Development and Testing

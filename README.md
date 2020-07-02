@@ -4,9 +4,7 @@
 ## Contents
 
 This repository contains sample YKTS DApp and smart contracts developed for Ethereum platform. All smart contracts are deployed on Ethereum's **Rinkeby** testnet. [Metamask](https://metamask.io) browser extension is used for testing and development  
-Please check out the `*.js` files in `app` directory. By setting `infuraAPIKey` (see [Infura](https://infura.io)) variable you may execute most of the tests without needing Metamask/Mist  
-
-* Ethereum network access via web3 provider may be checked using `app/conn.*` files
+Please check out the `*.js` files in `app` directory.
 
 
 ## Setting Up

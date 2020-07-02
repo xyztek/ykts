@@ -47,7 +47,7 @@ $ truffle migrate --network ropsten
 $ npm run dev
 ```
 
-A sample migration will look as follows, current smart contract cost is `0.0518081 ETH`
+A sample migration will look as follows, current smart contract (see [Etherscan](https://rinkeby.etherscan.io/address/0x2553Cf82F711c808278EA24F39A6678B53f593af)) cost is `0.0518081 ETH`
 
 ```sh
 $ truffle migrate --network rinkeby

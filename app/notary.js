@@ -104,6 +104,7 @@ window.App = {
 		document.getElementById("info_entity_id").innerHTML = 0;
 		document.getElementById("info_entity_address").innerHTML = 0;
 		document.getElementById("info_entity_hash").innerHTML = 0;
+		document.getElementById("info_entity_proxies").innerHTML = 0;
 
 		const search_entity_address = document.getElementById('search_entity_address').value;
 		if (!search_entity_address) {
@@ -121,12 +122,15 @@ window.App = {
 		const address = response[0];
 		const id = response[1];
 		const hash = response[2];
+		const proxies = response[3];
+
 		console.log("Search Response: ", response);
 		// OK
 		document.getElementById("search_entity_status").innerHTML = "OK";
 		document.getElementById("info_entity_id").innerHTML = id;
 		document.getElementById("info_entity_address").innerHTML = address;
 		document.getElementById("info_entity_hash").innerHTML = hash;
+		document.getElementById("info_entity_proxies").innerHTML = proxies;
 	},
 
 	approve_entity: async () => {

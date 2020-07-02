@@ -50,7 +50,7 @@ $ npm run dev
 A sample migration will look as follows, current smart contract cost is `0.0518081 ETH`
 
 ```sh
-$ truffle migrate --network rinkeby
+$ truffle migrate --network rinkeby
 
 Compiling your contracts...
 ===========================
@@ -62,7 +62,7 @@ Migrations dry-run (simulation)
 ===============================
 > Network name:    'rinkeby-fork'
 > Network id:      4
-> Block gas limit: 10000000 (0x989680)
+> Block gas limit: 10004062 (0x98a65e)
 
 
 1_initial_migration.js
@@ -70,10 +70,10 @@ Migrations dry-run (simulation)
 
    Deploying 'YKTS'
    ----------------
-   > block number:        6768436
-   > block timestamp:     1593682018
+   > block number:        6768719
+   > block timestamp:     1593686265
    > account:             0x6119AB391d0A2870D4e97E83a8aFe7FbFb558400
-   > balance:             9.205390429
+   > balance:             9.153492385
    > gas used:            2515405 (0x2661cd)
    > gas price:           2 gwei
    > value sent:          0 ETH
@@ -104,13 +104,13 @@ Starting migrations...
 
    Deploying 'YKTS'
    ----------------
-   > transaction hash:    0x1538dbfe787624e059b07018f8d724330bcc91c57f7800ad25f3ea619262466c
-   > Blocks: 0            Seconds: 8
-   > contract address:    0x8A395c8c418A67A3cb0eafd2285c26c8710cf9C2
-   > block number:        6768438
-   > block timestamp:     1593682044
+   > transaction hash:    0xaf270175c0b0027a26d2ffeb3717fcc17c5c98515aae37e73a26e8cf27acbe0f
+   > Blocks: 0            Seconds: 9
+   > contract address:    0x2553Cf82F711c808278EA24F39A6678B53f593af
+   > block number:        6768721
+   > block timestamp:     1593686289
    > account:             0x6119AB391d0A2870D4e97E83a8aFe7FbFb558400
-   > balance:             9.158613139
+   > balance:             9.106715095
    > gas used:            2590405 (0x2786c5)
    > gas price:           20 gwei
    > value sent:          0 ETH

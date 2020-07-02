@@ -27,8 +27,8 @@ contract YKTS is AccessControl {
         address owner;
         // hash of the Power of Attorney document
         bytes32 PoA;
-        // set of delegated proxy addresses verified in PoA
-        EnumerableSet.AddressSet proxies;
+        // array of delegated proxy addresses verified in PoA
+        address[] proxies;
     }
     // map addresses to entities
     mapping(address => Entity) private entity_address_map;
@@ -53,6 +53,25 @@ contract YKTS is AccessControl {
     bytes32 private constant NOTARY_ROLE = keccak256("NOTARY_ROLE");
     bytes32 private constant ENTITY_ROLE = keccak256("ENTITY_ROLE");
     bytes32 private constant BROKER_ROLE = keccak256("BROKER_ROLE");
+
+    // broker is invalid
+    event BrokerInvalid(address indexed account);
+    // entity is invalid
+    event EntityInvalid(address indexed account);
+    // entity/broker approval queue operation failed
+    event QueueOpFailed(address indexed account);
+    // signature verification or EC-recover operation failed
+    event RecoverFailed(address indexed account, bytes32 indexed hash, bytes indexed signature);
+
+    // fired after a successfull Broker approval request
+    event BrokerRequest(address indexed account);
+    // fired after a successfull Entity approval request
+    event EntityRequest(address indexed account);
+    // fired after an Broker is successfully approved
+    event BrokerApprove(address indexed account);
+    // fired after an Entity is successfully approved
+    event EntityApprove(address indexed account);
+
 
     /// @dev Add contract creator to the admin role as a member.
     constructor() public {
@@ -127,7 +146,6 @@ contract YKTS is AccessControl {
         revokeRole(NOTARY_ROLE, account);
     }
     // TODO removeAdmin() discussion!
-    // TODO admin transparency (length, list)?
 
 
 
@@ -148,9 +166,11 @@ contract YKTS is AccessControl {
         require(broker_approval_queue.contains(account), "Broker queue should contain the address!");
         require(bytes(broker_address_map[account].id).length > 0, "Broker should have applied before!");
         if (broker_approval_queue.remove(account) != true) {
+            emit QueueOpFailed(account);
             return false;
         }
         grantRole(BROKER_ROLE, account);
+        emit BrokerApprove(account);
         return true;
     }
     /// @dev Remove an account from the broker role. Restricted to notaries.
@@ -161,17 +181,20 @@ contract YKTS is AccessControl {
     function addEntity(address account) public onlyNotary returns(bool) {
         require(entity_approval_queue.contains(account), "Entity queue should contain the address!");
         require(bytes(entity_address_map[account].id).length > 0, "Entity should have applied before!");
-        require(entity_address_map[account].proxies.length() > 0, "Entity should have at least one proxy!");
+        require(entity_address_map[account].proxies.length > 0, "Entity should have at least one proxy!");
         // check if proxy Brokers are still valid
-        for (uint256 i = 0; i < entity_address_map[account].proxies.length(); i++) {
-            if (isBroker(entity_address_map[account].proxies.at(i)) != true) {
+        for (uint256 i = 0; i < entity_address_map[account].proxies.length; i++) {
+            if (isBroker(entity_address_map[account].proxies[i]) != true) {
+                emit BrokerInvalid(entity_address_map[account].proxies[i]);
                 return false;
             }
         }
         if (entity_approval_queue.remove(account) != true) {
+            emit QueueOpFailed(account);
             return false;
         }
         grantRole(ENTITY_ROLE, account);
+        emit EntityApprove(account);
         return true;
     }
     /// @dev Remove an account from the entity role. Restricted to notaries.
@@ -189,6 +212,7 @@ contract YKTS is AccessControl {
         require(bytes(broker_address_map[msg.sender].id).length == 0, "Broker already approved, address present!");
         // check Proof of Competence document hash signature
         if (isSigner(msg.sender, PoC_hash, signature) != true) {
+            emit RecoverFailed(msg.sender, PoC_hash, signature);
             return false;
         }
         // fill the mapping
@@ -197,8 +221,10 @@ contract YKTS is AccessControl {
         broker_address_map[msg.sender].PoC = PoC_hash;
         // add to notary approval queue
         if (broker_approval_queue.add(msg.sender) != true) {
+            emit QueueOpFailed(msg.sender);
             return false;
         }
+        emit BrokerRequest(msg.sender);
         return true;
     }
     /// @dev Return the count of the broker approval requests queued for notarization
@@ -250,11 +276,13 @@ contract YKTS is AccessControl {
         require(bytes(entity_address_map[msg.sender].id).length == 0, "Entity already approved, address present!");
         // check Power of Attorney document hash signature
         if (isSigner(msg.sender, PoA_hash, signature) != true) {
+            emit RecoverFailed(msg.sender, PoA_hash, signature);
             return false;
         }
         // check if proxies are already approved as Brokers
         for (uint256 i = 0; i < proxies.length; i++) {
             if (isBroker(proxies[i]) != true) {
+                emit BrokerInvalid(proxies[i]);
                 return false;
             }
         }
@@ -262,16 +290,13 @@ contract YKTS is AccessControl {
         entity_address_map[msg.sender].id = id;
         entity_address_map[msg.sender].owner = msg.sender;
         entity_address_map[msg.sender].PoA = PoA_hash;
-        for (uint256 i = 0; i < proxies.length; i++) {
-            if (entity_address_map[msg.sender].proxies.add(proxies[i]) != true) {
-                // TODO error handling?
-                return false;
-            }
-        }
+        entity_address_map[msg.sender].proxies = proxies;
         // add to notary approval queue
         if (entity_approval_queue.add(msg.sender) != true) {
+            emit QueueOpFailed(msg.sender);
             return false;
         }
+        emit EntityRequest(msg.sender);
         return true;
     }
     /// @dev Return the count of the broker approval requests queued for notarization

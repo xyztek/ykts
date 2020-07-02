@@ -126,3 +126,13 @@ Summary
 > Total deployments:   1
 > Final cost:          0.0518081 ETH
 ```
+
+Test accounts are as follows:
+
+```
+Account 1: 0x6119AB391d0A2870D4e97E83a8aFe7FbFb558400 (admin)
+Account 2: 0x5686D0cf1cE96fcA54D4d940feCC244f1B5B8D45 (notary)
+Account 3: 0x0061496184B3Ac4BF935247Dd52Ab96b3B99f613 (entity)
+Account 4: 0xdc8f590c97cA11afcc55155D9FB9BA761F0d791f (broker1)
+Account 5: 0x1432d11664ea7579BF73B31A92d732eFb003751d (broker2)
+```
